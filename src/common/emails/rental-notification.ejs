@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h2>Detalhes da Reserva</h2>
+    <table>
+        <tr>
+            <th>Nome</th>
+            <td><%= context.name %></td>
+        </tr>
+        <tr>
+            <th>Documento</th>
+            <td><%= context.document %></td>
+        </tr>
+        <tr>
+            <th>Telefone</th>
+            <td><%= context.phone %></td>
+        </tr>
+        <tr>
+            <th>Check-in</th>
+            <td> <%= context.checkInDate %></td>
+        </tr>
+        <tr>
+            <th>Check-out</th>
+            <td> <%= context.checkOutDate %></td>
+        </tr>
+    </table>
+</body>
+</html>
