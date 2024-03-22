@@ -19,10 +19,10 @@ import { ManagerResponseDto } from '../dto/manager-response.dto';
 export class ManagersController {
   constructor(private readonly managersService: ManagersService) {}
 
-  @ApiOperation({ summary: '' })
+  @ApiOperation({ summary: 'Criar conta de usuário' })
   @ApiResponse({
     status: 200,
-    description: '',
+    description: 'Conta de usuário criada com sucesso',
     type: ManagerResponseDto,
   })
   @ApiBody({ type: CreateManagerDto })
@@ -33,10 +33,10 @@ export class ManagersController {
     return this.managersService.create(createManagerDto);
   }
 
-  @ApiOperation({ summary: '' })
+  @ApiOperation({ summary: 'Obter listagem de contas dos usuários' })
   @ApiResponse({
     status: 200,
-    description: '',
+    description: 'Listagem de contas dos usuários retornada com sucesso',
     type: ManagerResponseDto,
   })
   @Get()
@@ -44,10 +44,10 @@ export class ManagersController {
     return this.managersService.findAll();
   }
 
-  @ApiOperation({ summary: '' })
+  @ApiOperation({ summary: 'Obter conta do usuário' })
   @ApiResponse({
     status: 200,
-    description: '',
+    description: 'Conta do usuário retornada com sucesso',
     type: ManagerResponseDto,
   })
   @Get(':id')
@@ -55,10 +55,10 @@ export class ManagersController {
     return this.managersService.findOne(params.id);
   }
 
-  @ApiOperation({ summary: '' })
+  @ApiOperation({ summary: 'Editar conta de usuário' })
   @ApiResponse({
     status: 200,
-    description: '',
+    description: 'Editar da conta do usuário realizada com sucesso',
     type: ManagerResponseDto,
   })
   @ApiBody({ type: UpdateManagerDto })
@@ -70,10 +70,10 @@ export class ManagersController {
     return this.managersService.update(params.id, updateManagerDto);
   }
 
-  @ApiOperation({ summary: '' })
+  @ApiOperation({ summary: 'Desativar conta de um usuário' })
   @ApiResponse({
     status: 204,
-    description: '',
+    description: 'Conta do usuário desativada com sucesso',
   })
   @HttpCode(204)
   @Delete(':id')
