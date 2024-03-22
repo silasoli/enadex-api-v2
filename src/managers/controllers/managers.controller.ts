@@ -12,9 +12,10 @@ import { ManagersService } from '../services/managers.service';
 import { CreateManagerDto } from '../dto/create-manager.dto';
 import { UpdateManagerDto } from '../dto/update-manager.dto';
 import { IDQueryDTO } from 'src/common/dto/id-query.dto';
-import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ManagerResponseDto } from '../dto/manager-response.dto';
 
+@ApiTags('Managers')
 @Controller('managers')
 export class ManagersController {
   constructor(private readonly managersService: ManagersService) {}

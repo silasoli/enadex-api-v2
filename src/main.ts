@@ -22,10 +22,10 @@ async function bootstrap() {
   });
 
   const config = new DocumentBuilder()
-    .setTitle('Space Tracker API')
-    .setDescription('Space Tracker API developed by @silasoli')
+    .setTitle('Enadex API')
+    .setDescription('Enadex API developed by ENADEX')
     .setVersion('1.0')
-    .addBearerAuth()
+    // .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
