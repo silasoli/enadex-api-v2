@@ -1,4 +1,4 @@
-import { Prop, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 
 export enum UnityEnum {
@@ -11,6 +11,7 @@ export enum UnityEnum {
 
 export type StudentDocument = Student & Document;
 
+@Schema({ timestamps: true })
 export class Student {
   _id?: mongoose.ObjectId | string;
 
