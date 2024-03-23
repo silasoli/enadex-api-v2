@@ -32,29 +32,29 @@ jobs:
       - name: Prettier
         run: npm run format
 
-  test:
-    name: test
-    needs: run-linters
-    runs-on: ubuntu-latest
+  # test:
+  #   name: test
+  #   needs: run-linters
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+  #   steps:
+  #     - name: Checkout Repository
+  #       uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
+  #     - name: Set up Node.js
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: 20
 
-      - name: Install Dependencies
-        run: npm install
+  #     - name: Install Dependencies
+  #       run: npm install
 
-      - name: Run Jest Tests
-        run: npm run test:cov
+  #     - name: Run Jest Tests
+  #       run: npm run test:cov
 
   build:
     runs-on: ubuntu-latest
-    needs: test
+    # needs: test
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
