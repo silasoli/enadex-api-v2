@@ -12,7 +12,7 @@ import { StudentsService } from '../services/students.service';
 import { CreateStudentDto } from '../dto/create-student.dto';
 import { UpdateStudentDto } from '../dto/update-student.dto';
 import { ApiOperation, ApiResponse, ApiBody, ApiTags } from '@nestjs/swagger';
-import { IDQueryDTO } from 'src/common/dto/id-query.dto';
+import { IDQueryDTO } from '../../common/dto/id-query.dto';
 import { StudentResponseDto } from '../dto/student-response.dto';
 
 @ApiTags('Students')
