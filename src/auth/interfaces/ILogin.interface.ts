@@ -6,4 +6,6 @@ export interface ILogin {
   name: string;
 
   email: string;
+
+  role?: string
 }

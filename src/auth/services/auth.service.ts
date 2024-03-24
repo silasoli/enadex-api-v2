@@ -23,14 +23,10 @@ export class AuthService {
   }
 
   private async sign(user: ILogin): Promise<UserLoginResponseDto> {
-    const { _id, name, email } = user;
-
-    const payload = { email, sub: _id };
+    const payload = { email: user.email, sub: user._id };
 
     return new UserLoginResponseDto({
-      _id,
-      name,
-      email,
+      ...user,
       access_token: this.jwtService.sign(payload),
     });
   }
@@ -38,12 +34,15 @@ export class AuthService {
   private async validateUser(dto: UserLoginDto, user: Manager | Student) {
     const passMath = await this.comparePass(dto.password, user.password);
 
+    const role = (user as Manager)?.role || null;
+
     if (!passMath) throw AUTH_ERRORS.INVALID_CREDENTIALS;
 
     return this.sign({
       _id: user._id,
       email: user.email,
       name: user.name,
+      role,
     });
   }
 
