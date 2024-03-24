@@ -3,9 +3,9 @@ import { AuthService } from './services/auth.service';
 import { AuthController } from './controllers/auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { ManagersModule } from 'src/managers/managers.module';
-import { StudentsModule } from 'src/students/students.module';
 import { AuthUserJwtStrategy } from './strategies/auth-user-jwt.strategy';
+import { ManagersModule } from '../managers/managers.module';
+import { StudentsModule } from '../students/students.module';
 
 @Module({
   imports: [
@@ -23,7 +23,7 @@ import { AuthUserJwtStrategy } from './strategies/auth-user-jwt.strategy';
       inject: [ConfigService],
     }),
     ManagersModule,
-    StudentsModule
+    StudentsModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, AuthUserJwtStrategy],

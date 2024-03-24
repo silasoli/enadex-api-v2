@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { UserLoginDto } from '../dto/user-login.dto';
 import { JwtService } from '@nestjs/jwt';
-import { ManagersService } from 'src/managers/services/managers.service';
-import { StudentsService } from 'src/students/services/students.service';
+import { ManagersService } from '../../managers/services/managers.service';
+import { StudentsService } from '../../students/services/students.service';
 import * as bcrypt from 'bcrypt';
-import { Manager } from 'src/managers/schemas/manager.entity';
-import { Student } from 'src/students/schemas/student.entity';
+import { Manager } from '../../managers/schemas/manager.entity';
+import { Student } from '../../students/schemas/student.entity';
 import { AUTH_ERRORS } from '../constants/auth-errors';
 import { ILogin } from '../interfaces/ILogin.interface';
 import { UserLoginResponseDto } from '../dto/user-login-response.dto';

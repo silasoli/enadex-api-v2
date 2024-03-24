@@ -21,7 +21,7 @@ import {
 } from '@nestjs/swagger';
 import { IDQueryDTO } from '../../common/dto/id-query.dto';
 import { StudentResponseDto } from '../dto/student-response.dto';
-import { AuthUserJwtGuard } from 'src/auth/guards/auth-user-jwt.guard';
+import { AuthUserJwtGuard } from '../../auth/guards/auth-user-jwt.guard';
 
 @ApiBearerAuth()
 @ApiTags('Students')

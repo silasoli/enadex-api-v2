@@ -21,7 +21,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { ManagerResponseDto } from '../dto/manager-response.dto';
-import { AuthUserJwtGuard } from 'src/auth/guards/auth-user-jwt.guard';
+import { AuthUserJwtGuard } from '../../auth/guards/auth-user-jwt.guard';
 
 @ApiBearerAuth()
 @ApiTags('Managers')
