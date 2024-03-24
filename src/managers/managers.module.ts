@@ -10,5 +10,6 @@ import { Manager, ManagerSchema } from './schemas/manager.entity';
   ],
   controllers: [ManagersController],
   providers: [ManagersService],
+  exports: [ManagersService]
 })
 export class ManagersModule {}

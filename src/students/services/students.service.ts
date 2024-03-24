@@ -15,6 +15,12 @@ export class StudentsService {
     private studentsModel: Model<StudentDocument>,
   ) {}
 
+  public async findByEmail(email: string): Promise<Student> {
+    return this.studentsModel.findOne({ email: email.toLowerCase() }, [
+      '+password',
+    ]);
+  }
+
   private async transformBody(dto: CreateStudentDto | UpdateStudentDto) {
     if (dto.password) dto.password = await bcrypt.hash(dto.password, 12);
   }
