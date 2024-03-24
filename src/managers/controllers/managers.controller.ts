@@ -7,16 +7,26 @@ import {
   Param,
   Delete,
   HttpCode,
+  UseGuards,
 } from '@nestjs/common';
 import { ManagersService } from '../services/managers.service';
 import { CreateManagerDto } from '../dto/create-manager.dto';
 import { UpdateManagerDto } from '../dto/update-manager.dto';
 import { IDQueryDTO } from '../../common/dto/id-query.dto';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { ManagerResponseDto } from '../dto/manager-response.dto';
+import { AuthUserJwtGuard } from '../../auth/guards/auth-user-jwt.guard';
 
+@ApiBearerAuth()
 @ApiTags('Managers')
 @Controller('managers')
+@UseGuards(AuthUserJwtGuard)
 export class ManagersController {
   constructor(private readonly managersService: ManagersService) {}
 

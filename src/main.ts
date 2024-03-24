@@ -25,7 +25,7 @@ async function bootstrap() {
     .setTitle('Enadex API')
     .setDescription('Enadex API developed by ENADEX')
     .setVersion('1.0')
-    // .addBearerAuth()
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

@@ -7,16 +7,26 @@ import {
   Param,
   Delete,
   HttpCode,
+  UseGuards,
 } from '@nestjs/common';
 import { StudentsService } from '../services/students.service';
 import { CreateStudentDto } from '../dto/create-student.dto';
 import { UpdateStudentDto } from '../dto/update-student.dto';
-import { ApiOperation, ApiResponse, ApiBody, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiResponse,
+  ApiBody,
+  ApiTags,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { IDQueryDTO } from '../../common/dto/id-query.dto';
 import { StudentResponseDto } from '../dto/student-response.dto';
+import { AuthUserJwtGuard } from '../../auth/guards/auth-user-jwt.guard';
 
+@ApiBearerAuth()
 @ApiTags('Students')
 @Controller('students')
+@UseGuards(AuthUserJwtGuard)
 export class StudentsController {
   constructor(private readonly studentsService: StudentsService) {}
 

@@ -15,6 +15,12 @@ export class ManagersService {
     private managerModel: Model<ManagerDocument>,
   ) {}
 
+  public async findByEmail(email: string): Promise<Manager> {
+    return this.managerModel.findOne({ email: email.toLowerCase() }, [
+      '+password',
+    ]);
+  }
+
   private async transformBody(dto: CreateManagerDto | UpdateManagerDto) {
     if (dto.password) dto.password = await bcrypt.hash(dto.password, 12);
   }
