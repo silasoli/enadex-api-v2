@@ -3,7 +3,7 @@ import { CreateManagerDto } from '../dto/create-manager.dto';
 import { UpdateManagerDto } from '../dto/update-manager.dto';
 import { Manager, ManagerDocument } from '../schemas/manager.entity';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
 import { MANAGERS_ERRORS } from '../constants/managers-errors';
 import * as bcrypt from 'bcrypt';
 import { ManagerResponseDto } from '../dto/manager-response.dto';
@@ -15,10 +15,12 @@ export class ManagersService {
     private managerModel: Model<ManagerDocument>,
   ) {}
 
-  public async findByEmail(email: string): Promise<Manager> {
-    return this.managerModel.findOne({ email: email.toLowerCase() }, [
-      '+password',
-    ]);
+  public async findByEmail(email: string, active: boolean): Promise<Manager> {
+    const filter: FilterQuery<Manager> = { email: email.toLowerCase() };
+
+    if (active) filter.active = active;
+
+    return this.managerModel.findOne(filter, ['+password']);
   }
 
   private async transformBody(dto: CreateManagerDto | UpdateManagerDto) {

@@ -51,10 +51,10 @@ export class AuthService {
   ): Promise<UserLoginResponseDto> {
     let user: Manager | Student = null;
 
-    user = await this.studentsService.findByEmail(dto.email);
+    user = await this.studentsService.findByEmail(dto.email, true);
     if (user) return this.validateUser(dto, user);
 
-    user = await this.managersService.findByEmail(dto.email);
+    user = await this.managersService.findByEmail(dto.email, true);
     if (user && user.role) return this.validateUser(dto, user);
 
     if (!user) throw AUTH_ERRORS.INVALID_CREDENTIALS;

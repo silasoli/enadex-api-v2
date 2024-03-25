@@ -3,7 +3,7 @@ import { CreateStudentDto } from '../dto/create-student.dto';
 import { UpdateStudentDto } from '../dto/update-student.dto';
 import { Student, StudentDocument } from '../schemas/student.entity';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
 import { StudentResponseDto } from '../dto/student-response.dto';
 import { STUDENTS_ERRORS } from '../constants/students-errors';
 import * as bcrypt from 'bcrypt';
@@ -15,10 +15,12 @@ export class StudentsService {
     private studentsModel: Model<StudentDocument>,
   ) {}
 
-  public async findByEmail(email: string): Promise<Student> {
-    return this.studentsModel.findOne({ email: email.toLowerCase() }, [
-      '+password',
-    ]);
+  public async findByEmail(email: string, active: boolean): Promise<Student> {
+    const filter: FilterQuery<Student> = { email: email.toLowerCase() };
+
+    if (active) filter.active = active;
+
+    return this.studentsModel.findOne(filter, ['+password']);
   }
 
   private async transformBody(dto: CreateStudentDto | UpdateStudentDto) {
