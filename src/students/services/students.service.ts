@@ -7,12 +7,14 @@ import { FilterQuery, Model } from 'mongoose';
 import { StudentResponseDto } from '../dto/student-response.dto';
 import { STUDENTS_ERRORS } from '../constants/students-errors';
 import * as bcrypt from 'bcrypt';
+import { ManagersService } from 'src/managers/services/managers.service';
 
 @Injectable()
 export class StudentsService {
   constructor(
     @InjectModel(Student.name)
     private studentsModel: Model<StudentDocument>,
+    private managersService: ManagersService
   ) {}
 
   public async findByEmail(email: string, active: boolean): Promise<Student> {
@@ -25,6 +27,11 @@ export class StudentsService {
 
   private async transformBody(dto: CreateStudentDto | UpdateStudentDto) {
     if (dto.password) dto.password = await bcrypt.hash(dto.password, 12);
+  }
+
+  private async validatingEmailDuplication(email: string) {
+    const manager = await this.managersService.findByEmail(email, false);
+    if (manager) throw STUDENTS_ERRORS.DUPLICATE_EMAIL; 
   }
 
   public async create(dto: CreateStudentDto): Promise<StudentResponseDto> {
