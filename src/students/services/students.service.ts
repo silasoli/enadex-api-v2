@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { CreateStudentDto } from '../dto/create-student.dto';
 import { UpdateStudentDto } from '../dto/update-student.dto';
 import { Student, StudentDocument } from '../schemas/student.entity';
@@ -7,12 +7,15 @@ import { FilterQuery, Model } from 'mongoose';
 import { StudentResponseDto } from '../dto/student-response.dto';
 import { STUDENTS_ERRORS } from '../constants/students-errors';
 import * as bcrypt from 'bcrypt';
+import { ManagersService } from '../../managers/services/managers.service';
 
 @Injectable()
 export class StudentsService {
   constructor(
     @InjectModel(Student.name)
     private studentsModel: Model<StudentDocument>,
+    @Inject(forwardRef(() => ManagersService))
+    private managersService: ManagersService,
   ) {}
 
   public async findByEmail(email: string, active: boolean): Promise<Student> {
@@ -27,7 +30,14 @@ export class StudentsService {
     if (dto.password) dto.password = await bcrypt.hash(dto.password, 12);
   }
 
+  private async validatingManagersEmail(email: string) {
+    const manager = await this.managersService.findByEmail(email, false);
+    if (manager) throw STUDENTS_ERRORS.DUPLICATE_EMAIL;
+  }
+
   public async create(dto: CreateStudentDto): Promise<StudentResponseDto> {
+    await this.validatingManagersEmail(dto.email);
+
     await this.transformBody(dto);
 
     const created = await this.studentsModel.create(dto);
@@ -60,6 +70,8 @@ export class StudentsService {
     dto: UpdateStudentDto,
   ): Promise<StudentResponseDto> {
     await this.findStudentByID(_id);
+
+    if (dto.email) await this.validatingManagersEmail(dto.email);
 
     const rawData = { ...dto };
 
