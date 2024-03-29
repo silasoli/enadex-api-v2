@@ -7,6 +7,6 @@ export const MANAGERS_ERRORS = {
   }),
   DUPLICATE_EMAIL: new ConflictException({
     id: 'MANAGERS-002',
-    message: 'Email já utilizado.',
+    message: 'Este endereço de e-mail já está em uso.',
   }),
 };

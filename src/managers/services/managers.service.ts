@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { CreateManagerDto } from '../dto/create-manager.dto';
 import { UpdateManagerDto } from '../dto/update-manager.dto';
 import { Manager, ManagerDocument } from '../schemas/manager.entity';
@@ -14,6 +14,7 @@ export class ManagersService {
   constructor(
     @InjectModel(Manager.name)
     private managerModel: Model<ManagerDocument>,
+    @Inject(forwardRef(() => StudentsService))
     private studentsService: StudentsService
   ) {}
 
@@ -29,12 +30,14 @@ export class ManagersService {
     if (dto.password) dto.password = await bcrypt.hash(dto.password, 12);
   }
 
-  private async validatingEmailDuplication(email: string) {
+  private async validatingStudentsEmail(email: string) {
     const student = await this.studentsService.findByEmail(email, false);
     if (student) throw MANAGERS_ERRORS.DUPLICATE_EMAIL;
   }
 
   public async create(dto: CreateManagerDto): Promise<ManagerResponseDto> {
+    await this.validatingStudentsEmail(dto.email)
+
     await this.transformBody(dto);
 
     const created = await this.managerModel.create(dto);
@@ -67,6 +70,8 @@ export class ManagersService {
     dto: UpdateManagerDto,
   ): Promise<ManagerResponseDto> {
     await this.findManagerByID(_id);
+
+    if (dto.email) await this.validatingStudentsEmail(dto.email);
 
     const rawData = { ...dto };
 
