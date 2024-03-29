@@ -7,7 +7,7 @@ import { FilterQuery, Model } from 'mongoose';
 import { StudentResponseDto } from '../dto/student-response.dto';
 import { STUDENTS_ERRORS } from '../constants/students-errors';
 import * as bcrypt from 'bcrypt';
-import { ManagersService } from 'src/managers/services/managers.service';
+import { ManagersService } from '../../managers/services/managers.service';
 
 @Injectable()
 export class StudentsService {
