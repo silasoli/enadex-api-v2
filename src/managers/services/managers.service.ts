@@ -1,7 +1,11 @@
 import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { CreateManagerDto } from '../dto/create-manager.dto';
 import { UpdateManagerDto } from '../dto/update-manager.dto';
-import { Manager, ManagerDocument } from '../schemas/manager.entity';
+import {
+  Manager,
+  ManagerDocument,
+  ManagersRoleEnum,
+} from '../schemas/manager.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
 import { MANAGERS_ERRORS } from '../constants/managers-errors';
@@ -15,7 +19,7 @@ export class ManagersService {
     @InjectModel(Manager.name)
     private managerModel: Model<ManagerDocument>,
     @Inject(forwardRef(() => StudentsService))
-    private studentsService: StudentsService
+    private studentsService: StudentsService,
   ) {}
 
   public async findByEmail(email: string, active: boolean): Promise<Manager> {
@@ -36,7 +40,7 @@ export class ManagersService {
   }
 
   public async create(dto: CreateManagerDto): Promise<ManagerResponseDto> {
-    await this.validatingStudentsEmail(dto.email)
+    await this.validatingStudentsEmail(dto.email);
 
     await this.transformBody(dto);
 
@@ -85,5 +89,13 @@ export class ManagersService {
   public async remove(_id: string): Promise<void> {
     await this.findManagerByID(_id);
     await this.managerModel.updateOne({ _id }, { active: false });
+  }
+
+  public async findRole(_id: string): Promise<ManagersRoleEnum> {
+    const manager = await this.managerModel.findOne({ _id }, ['roles']);
+
+    if (!manager) throw MANAGERS_ERRORS.NOT_FOUND;
+
+    return manager.role;
   }
 }
