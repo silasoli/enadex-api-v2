@@ -8,10 +8,7 @@ import { ManagersService } from '../../managers/services/managers.service';
 import { CreateStudentDto } from '../dto/create-student.dto';
 import { Manager } from 'src/managers/schemas/manager.entity';
 import { UpdateStudentDto } from '../dto/update-student.dto';
-import { StudentsModule } from '../students.module';
-// import { StudentResponseDto } from '../dto/student-response.dto';
 
-const userId = faker.database.mongodbObjectId();
 const studentId = faker.database.mongodbObjectId();
 const studentEmail = faker.internet.email();
 const studentName = faker.person.fullName();
@@ -96,7 +93,6 @@ describe('StudentsService', () => {
     expect(studentsService).toBeDefined();
     expect(studentModel).toBeDefined();
     expect(manegerService).toBeDefined();
-    //expect(userModel).toBeDefined();
   });
 
   describe('findAll', () => {
@@ -264,6 +260,7 @@ describe('StudentsService', () => {
       };
 
       jest.spyOn(studentModel, 'findById').mockResolvedValue(mockStudent);
+      jest.spyOn(manegerService, 'findByEmail').mockResolvedValue(null);
 
       const updateStudent = await studentsService.update(
         studentId,
@@ -275,16 +272,32 @@ describe('StudentsService', () => {
       expect(updateStudent).toBeDefined();
     });
 
-    // it('should return STUDENTS_ERRORS.NOT_FOUND', () => {
-    //   const mockStudentDto: UpdateStudentDto = {
-    //     password: faker.internet.password(),
-    //   };
+    it('should return STUDENTS_ERRORS.NOT_FOUND', async () => {
+      const mockStudentDto: UpdateStudentDto = {
+        password: faker.internet.password(),
+      };
 
-    //   jest.spyOn(studentModel, 'findById').mockRejectedValueOnce(null);
+      jest.spyOn(studentModel, 'findById').mockReturnValueOnce(null);
 
-    //   expect(
-    //     studentsService.update('595e867fe9af41af7f111234', mockStudentDto),
-    //   ).rejects.toThrow('Usuário não encontrado.');
-    // });
+      await expect(
+        studentsService.update('595e867fe9af41af7f111234', mockStudentDto),
+      ).rejects.toThrow('Usuário não encontrado.');
+    });
+
+    it('should return STUDENTS_ERRORS.DUPLICATE_EMAIL', async () => {
+      const mockStudentDto: UpdateStudentDto = {
+        email: faker.internet.email(),
+        password: faker.internet.password(),
+      };
+
+      jest.spyOn(studentModel, 'findById').mockResolvedValue(mockStudent);
+      jest
+        .spyOn(manegerService, 'findByEmail')
+        .mockResolvedValue(mockStudent as unknown as Manager);
+
+      await expect(
+        studentsService.update(mockStudent._id, mockStudentDto),
+      ).rejects.toThrow('Este endereço de e-mail já está em uso.');
+    });
   });
 });
