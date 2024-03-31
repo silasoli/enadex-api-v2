@@ -5,6 +5,11 @@ import { Student, StudentDocument, UnityEnum } from '../schemas/student.entity';
 import { Model } from 'mongoose';
 import { faker } from '@faker-js/faker';
 import { ManagersService } from '../../managers/services/managers.service';
+import { CreateStudentDto } from '../dto/create-student.dto';
+import { Manager } from 'src/managers/schemas/manager.entity';
+import { UpdateStudentDto } from '../dto/update-student.dto';
+import { StudentsModule } from '../students.module';
+// import { StudentResponseDto } from '../dto/student-response.dto';
 
 const userId = faker.database.mongodbObjectId();
 const studentId = faker.database.mongodbObjectId();
@@ -28,6 +33,10 @@ const studentModelMock: Partial<Model<StudentDocument>> = {
     if (query._id === studentId) return mockStudent;
     return null;
   }),
+  findById: jest.fn().mockImplementation((_id) => {
+    if (_id === studentId) return mockStudent;
+    return null;
+  }),
   find: jest.fn().mockImplementation((query) => {
     return Promise.resolve([mockStudent]); // Adjust if needed
   }),
@@ -49,8 +58,17 @@ const studentModelMock: Partial<Model<StudentDocument>> = {
   }),
 };
 
+const managersServiceMock = {
+  findByEmail: jest.fn().mockImplementation((email) => {
+    if (email === studentEmail) return mockStudent;
+    return null;
+  }),
+};
+
 describe('StudentsService', () => {
-  let service: StudentsService;
+  let studentsService: StudentsService;
+  let studentModel: Model<StudentDocument>;
+  let manegerService: ManagersService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -62,33 +80,211 @@ describe('StudentsService', () => {
         },
         {
           provide: ManagersService,
-          useValue: {},
+          useValue: managersServiceMock,
         },
       ],
     }).compile();
 
-    service = module.get<StudentsService>(StudentsService);
+    studentsService = module.get<StudentsService>(StudentsService);
+    studentModel = module.get<Model<StudentDocument>>(
+      getModelToken(Student.name),
+    );
+    manegerService = module.get<ManagersService>(ManagersService);
   });
 
-  // it('should create a new student', async () => {
-  //   const mockStudentDto = {
-  //     ...mockStudent,
-  //     password: faker.internet.password(),
-  //   };
-  
-  //   const createdStudent = await service.create(mockStudentDto);
-  
-  //   expect(createdStudent).toHaveProperty('_id');
-  //   expect(createdStudent.name).toBe(mockStudentDto.name);
-  //   expect(createdStudent.email).toBe(mockStudentDto.email);
-  //   expect(createdStudent.registration).toBe(mockStudentDto.registration);
-  //   expect(createdStudent.semester).toBe(mockStudentDto.semester);
-  //   expect(createdStudent.unity).toBe(mockStudentDto.unity);
-  
-  //   // Verify model.create was called with expected data
-  //   expect(studentModelMock.create).toBeCalledWith(mockStudentDto);
-  // });
+  it('should be defined', () => {
+    expect(studentsService).toBeDefined();
+    expect(studentModel).toBeDefined();
+    expect(manegerService).toBeDefined();
+    //expect(userModel).toBeDefined();
+  });
 
-  
-  // ... Add test cases for each method, as provided earlier ...
+  describe('findAll', () => {
+    it('should return all students', async () => {
+      const allStudents = await studentsService.findAll();
+
+      expect(studentModel.find).toHaveBeenCalled();
+      expect(allStudents).toEqual([mockStudent]);
+    });
+
+    it('should throw an exception', () => {
+      jest.spyOn(studentModel, 'find').mockRejectedValueOnce(new Error());
+
+      expect(studentsService.findAll()).rejects.toThrow();
+    });
+  });
+
+  describe('findOne', () => {
+    it('should return a specific student', async () => {
+      const foundStudent = await studentsService.findOne(mockStudent._id);
+
+      expect(studentModel.findById).toHaveBeenCalled();
+      expect(foundStudent).toEqual(mockStudent);
+    });
+
+    it('should return STUDENTS_ERRORS.NOT_FOUND', async () => {
+      await expect(
+        studentsService.findOne('595e867fe9af41af7f111234'),
+      ).rejects.toThrow('Usuário não encontrado.');
+    });
+  });
+
+  describe('findByEmail', () => {
+    it('should return a specific student by email', async () => {
+      jest.spyOn(studentModel, 'findOne').mockResolvedValue(mockStudent);
+      const studentsByEmail = await studentsService.findByEmail(
+        mockStudent.email,
+        true,
+      );
+
+      expect(studentModel.findOne).toHaveBeenCalled();
+      expect(studentsByEmail).toEqual(mockStudent);
+    });
+
+    it('should return a specific student by email and active true', async () => {
+      jest.spyOn(studentModel, 'findOne').mockResolvedValue(mockStudent);
+      const studentsByEmail = await studentsService.findByEmail(
+        mockStudent.email,
+        true,
+      );
+
+      expect(studentModel.findOne).toHaveBeenCalled();
+      expect(studentModel.findOne).toHaveBeenCalledWith(
+        { active: true, email: mockStudent.email.toLowerCase() },
+        ['+password'],
+      );
+      expect(studentsByEmail).toEqual(mockStudent);
+    });
+
+    it('should return a specific student by email and active false', async () => {
+      jest.spyOn(studentModel, 'findOne').mockResolvedValue(mockStudent);
+      const studentsByEmail = await studentsService.findByEmail(
+        mockStudent.email,
+        false,
+      );
+
+      expect(studentModel.findOne).toHaveBeenCalled();
+      expect(studentModel.findOne).toHaveBeenCalledWith(
+        { email: mockStudent.email.toLowerCase() },
+        ['+password'],
+      );
+      expect(studentsByEmail).toEqual(mockStudent);
+    });
+
+    it('should return null if student not found', async () => {
+      const email = 'nonexistent@email.com';
+      jest.spyOn(studentModel, 'findOne').mockResolvedValue(null);
+      const studentByEmail = await studentsService.findByEmail(email, true);
+
+      expect(studentModel.findOne).toHaveBeenCalled();
+      expect(studentByEmail).toBeNull();
+    });
+  });
+
+  describe('deleteById', () => {
+    it('should delete a student successfully', async () => {
+      const deleteStudent = await studentsService.remove(mockStudent._id);
+
+      expect(deleteStudent).toBeUndefined();
+      expect(studentModel.updateOne).toHaveBeenCalled();
+      expect(studentModel.findById).toHaveBeenCalled();
+    });
+
+    it('should return STUDENTS_ERRORS.NOT_FOUND', async () => {
+      await expect(
+        studentsService.remove('595e867fe9af41af7f111234'),
+      ).rejects.toThrow('Usuário não encontrado.');
+    });
+
+    it('should throw an exception', () => {
+      jest.spyOn(studentModel, 'updateOne').mockRejectedValue(new Error());
+
+      expect(
+        studentsService.remove('595e867fe9af41af7f111234'),
+      ).rejects.toThrow();
+    });
+  });
+
+  describe('create', () => {
+    it('should create a new student', async () => {
+      const mockStudentDto: CreateStudentDto = {
+        ...mockStudent,
+        password: faker.internet.password(),
+      };
+
+      jest.spyOn(manegerService, 'findByEmail').mockResolvedValue(null);
+
+      const createdStudent = await studentsService.create(mockStudentDto);
+
+      expect(studentModel.create).toHaveBeenCalledWith(mockStudentDto);
+      expect(createdStudent).toBeDefined();
+    });
+
+    it('should return STUDENTS_ERRORS.DUPLICATE_EMAIL', async () => {
+      const mockStudentDto: CreateStudentDto = {
+        ...mockStudent,
+        password: faker.internet.password(),
+      };
+
+      jest
+        .spyOn(manegerService, 'findByEmail')
+        .mockResolvedValue(mockStudent as unknown as Manager);
+
+      await expect(studentsService.create(mockStudentDto)).rejects.toThrow(
+        'Este endereço de e-mail já está em uso.',
+      );
+    });
+  });
+
+  describe('update', () => {
+    it('should update a student', async () => {
+      const mockStudentDto: UpdateStudentDto = {
+        password: faker.internet.password(),
+      };
+
+      jest.spyOn(studentModel, 'findById').mockResolvedValue(mockStudent);
+      jest
+        .spyOn(studentModel, 'updateOne')
+        .mockResolvedValue({ nModified: 1 } as any);
+
+      const updateStudent = await studentsService.update(
+        studentId,
+        mockStudentDto,
+      );
+
+      expect(studentModel.updateOne).toHaveBeenCalled();
+      expect(studentModel.findById).toHaveBeenCalled();
+      expect(updateStudent).toBeDefined();
+    });
+
+    it('should update a student email', async () => {
+      const mockStudentDto: UpdateStudentDto = {
+        email: faker.internet.email(),
+        password: faker.internet.password(),
+      };
+
+      jest.spyOn(studentModel, 'findById').mockResolvedValue(mockStudent);
+
+      const updateStudent = await studentsService.update(
+        studentId,
+        mockStudentDto,
+      );
+
+      expect(studentModel.updateOne).toHaveBeenCalled();
+      expect(studentModel.findById).toHaveBeenCalled();
+      expect(updateStudent).toBeDefined();
+    });
+
+    // it('should return STUDENTS_ERRORS.NOT_FOUND', () => {
+    //   const mockStudentDto: UpdateStudentDto = {
+    //     password: faker.internet.password(),
+    //   };
+
+    //   jest.spyOn(studentModel, 'findById').mockRejectedValueOnce(null);
+
+    //   expect(
+    //     studentsService.update('595e867fe9af41af7f111234', mockStudentDto),
+    //   ).rejects.toThrow('Usuário não encontrado.');
+    // });
+  });
 });
