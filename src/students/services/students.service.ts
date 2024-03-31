@@ -46,23 +46,23 @@ export class StudentsService {
   }
 
   public async findAll(): Promise<StudentResponseDto[]> {
-    const managers = await this.studentsModel.find();
+    const students = await this.studentsModel.find();
 
-    return managers.map((manager) => new StudentResponseDto(manager));
+    return students.map((student) => new StudentResponseDto(student));
   }
 
   private async findStudentByID(_id: string): Promise<Student> {
-    const manager = await this.studentsModel.findById(_id);
+    const student = await this.studentsModel.findById(_id);
 
-    if (!manager) throw STUDENTS_ERRORS.NOT_FOUND;
+    if (!student) throw STUDENTS_ERRORS.NOT_FOUND;
 
-    return manager;
+    return student;
   }
 
   public async findOne(_id: string): Promise<StudentResponseDto> {
-    const manager = await this.findStudentByID(_id);
+    const student = await this.findStudentByID(_id);
 
-    return new StudentResponseDto(manager);
+    return new StudentResponseDto(student);
   }
 
   public async update(
