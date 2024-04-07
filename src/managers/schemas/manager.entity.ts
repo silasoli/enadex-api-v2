@@ -22,7 +22,7 @@ export class Manager {
   password: string;
 
   @Prop({ type: String, enum: ManagersRoleEnum })
-  role: ManagersRoleEnum
+  role: ManagersRoleEnum;
 
   @Prop({ default: () => true })
   active: boolean;

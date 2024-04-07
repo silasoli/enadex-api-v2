@@ -15,11 +15,11 @@ export const ERRORS = {
     }),
   },
   AUTH: {
-    INVALID_CREDENTIALS: new ForbiddenException({
+    INVALID_CREDENTIALS: new UnauthorizedException({
       id: 'AUTH-001',
       message: 'Credenciais inválidas.',
     }),
-    LACK_PERMISSION: new UnauthorizedException({
+    LACK_PERMISSION: new ForbiddenException({
       id: 'AUTH-002',
       message: 'Usuário não tem permissão.',
     }),
