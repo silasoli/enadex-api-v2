@@ -34,6 +34,7 @@ const studentModelMock: Partial<Model<StudentDocument>> = {
     if (_id === studentId) return mockStudent;
     return null;
   }),
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   find: jest.fn().mockImplementation((query) => {
     return Promise.resolve([mockStudent]); // Adjust if needed
   }),

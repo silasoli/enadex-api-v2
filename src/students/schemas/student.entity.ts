@@ -38,4 +38,3 @@ export class Student {
 }
 
 export const StudentSchema = SchemaFactory.createForClass(Student);
-
