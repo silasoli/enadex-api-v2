@@ -3,7 +3,7 @@ import { Reflector } from '@nestjs/core';
 import { RoleUtil } from '../utils/role.util';
 import { ROLE_KEY } from '../decorators/roles.decorator';
 import { ManagersRoleEnum } from '../../managers/schemas/manager.entity';
-import { RequestWithUser } from '../../auth/interfaces/Iuser-request.interface';
+import { RequestWithUser } from '../../auth/interfaces/IUser-request.interface';
 import { AUTH_ERRORS } from '../../auth/constants/auth-errors';
 
 @Injectable()
