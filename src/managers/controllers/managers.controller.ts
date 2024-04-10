@@ -21,11 +21,14 @@ import {
 } from '@nestjs/swagger';
 import { ManagerResponseDto } from '../dto/manager-response.dto';
 import { AuthUserJwtGuard } from '../../auth/guards/auth-user-jwt.guard';
+import { Role } from '../../roles/decorators/roles.decorator';
+import { ManagersRoleEnum } from '../schemas/manager.entity';
+import { RoleGuard } from '../../roles/guards/role.guard';
 
 @ApiBearerAuth()
 @ApiTags('Managers')
 @Controller('managers')
-@UseGuards(AuthUserJwtGuard)
+@UseGuards(AuthUserJwtGuard, RoleGuard)
 export class ManagersController {
   constructor(private readonly managersService: ManagersService) {}
 
@@ -36,6 +39,7 @@ export class ManagersController {
     type: ManagerResponseDto,
   })
   @ApiBody({ type: CreateManagerDto })
+  @Role([ManagersRoleEnum.COORDINATORS])
   @Post()
   create(
     @Body() createManagerDto: CreateManagerDto,
@@ -49,6 +53,7 @@ export class ManagersController {
     description: 'Listagem de contas dos usuários retornada com sucesso',
     type: ManagerResponseDto,
   })
+  @Role([ManagersRoleEnum.COORDINATORS])
   @Get()
   findAll(): Promise<ManagerResponseDto[]> {
     return this.managersService.findAll();
@@ -60,6 +65,7 @@ export class ManagersController {
     description: 'Conta do usuário retornada com sucesso',
     type: ManagerResponseDto,
   })
+  @Role([ManagersRoleEnum.COORDINATORS])
   @Get(':id')
   findOne(@Param() params: IDQueryDTO): Promise<ManagerResponseDto> {
     return this.managersService.findOne(params.id);
@@ -72,6 +78,7 @@ export class ManagersController {
     type: ManagerResponseDto,
   })
   @ApiBody({ type: UpdateManagerDto })
+  @Role([ManagersRoleEnum.COORDINATORS])
   @Patch(':id')
   update(
     @Param() params: IDQueryDTO,
@@ -86,6 +93,7 @@ export class ManagersController {
     description: 'Conta do usuário ativada com sucesso',
   })
   @HttpCode(204)
+  @Role([ManagersRoleEnum.COORDINATORS])
   @Post(':id/activate')
   activateManager(@Param() params: IDQueryDTO): Promise<void> {
     return this.managersService.activeOrDeactive(params.id, true);
@@ -97,6 +105,7 @@ export class ManagersController {
     description: 'Conta do usuário desativada com sucesso',
   })
   @HttpCode(204)
+  @Role([ManagersRoleEnum.COORDINATORS])
   @Post(':id/deactivate')
   deactivateManager(@Param() params: IDQueryDTO): Promise<void> {
     return this.managersService.activeOrDeactive(params.id, false);

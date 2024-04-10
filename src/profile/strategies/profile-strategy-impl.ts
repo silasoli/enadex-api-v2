@@ -47,17 +47,18 @@ export class ProfileStrategyImpl implements ProfileStrategy {
     }
   }
 
-
   public async updateOneProfile(
     _id: string,
     dto: UpdateProfileDto,
   ): Promise<ManagerResponseDto | StudentResponseDto> {
-    const { email, name, semester, unity } = dto;
     const userType = await this.findUserType(_id);
 
     switch (userType) {
       case ProfileTypeEnum.MANAGERS: {
-        return this.managerStrategy.updateOneProfile(_id, { email, name });
+        return this.managerStrategy.updateOneProfile(_id, {
+          email: dto.email,
+          name: dto.name,
+        });
       }
 
       case ProfileTypeEnum.STUDENTS: {

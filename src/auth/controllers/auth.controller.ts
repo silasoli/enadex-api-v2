@@ -13,7 +13,7 @@ export class AuthController {
   @ApiResponse({
     status: 201,
     description: 'Conta de usuário logada com sucesso',
-    type: UserLoginResponseDto
+    type: UserLoginResponseDto,
   })
   @ApiBody({ type: UserLoginDto })
   @Post()
