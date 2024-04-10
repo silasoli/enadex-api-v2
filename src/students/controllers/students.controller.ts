@@ -5,7 +5,6 @@ import {
   Body,
   Patch,
   Param,
-  Delete,
   HttpCode,
   UseGuards,
 } from '@nestjs/common';
@@ -22,11 +21,14 @@ import {
 import { IDQueryDTO } from '../../common/dto/id-query.dto';
 import { StudentResponseDto } from '../dto/student-response.dto';
 import { AuthUserJwtGuard } from '../../auth/guards/auth-user-jwt.guard';
+import { RoleGuard } from '../../roles/guards/role.guard';
+import { Role } from '../../roles/decorators/roles.decorator';
+import { ManagersRoleEnum } from '../../managers/schemas/manager.entity';
 
 @ApiBearerAuth()
 @ApiTags('Students')
 @Controller('students')
-@UseGuards(AuthUserJwtGuard)
+@UseGuards(AuthUserJwtGuard, RoleGuard)
 export class StudentsController {
   constructor(private readonly studentsService: StudentsService) {}
 
@@ -37,6 +39,7 @@ export class StudentsController {
     type: StudentResponseDto,
   })
   @ApiBody({ type: CreateStudentDto })
+  @Role([ManagersRoleEnum.COORDINATORS, ManagersRoleEnum.TEACHERS])
   @Post()
   create(
     @Body() CreateStudentDto: CreateStudentDto,
@@ -50,6 +53,7 @@ export class StudentsController {
     description: 'Listagem de contas dos usuários retornada com sucesso',
     type: StudentResponseDto,
   })
+  @Role([ManagersRoleEnum.COORDINATORS, ManagersRoleEnum.TEACHERS])
   @Get()
   findAll(): Promise<StudentResponseDto[]> {
     return this.studentsService.findAll();
@@ -61,6 +65,7 @@ export class StudentsController {
     description: 'Conta do usuário retornada com sucesso',
     type: StudentResponseDto,
   })
+  @Role([ManagersRoleEnum.COORDINATORS, ManagersRoleEnum.TEACHERS])
   @Get(':id')
   findOne(@Param() params: IDQueryDTO): Promise<StudentResponseDto> {
     return this.studentsService.findOne(params.id);
@@ -73,6 +78,7 @@ export class StudentsController {
     type: StudentResponseDto,
   })
   @ApiBody({ type: UpdateStudentDto })
+  @Role([ManagersRoleEnum.COORDINATORS, ManagersRoleEnum.TEACHERS])
   @Patch(':id')
   update(
     @Param() params: IDQueryDTO,
@@ -87,6 +93,7 @@ export class StudentsController {
     description: 'Conta do usuário ativada com sucesso',
   })
   @HttpCode(204)
+  @Role([ManagersRoleEnum.COORDINATORS, ManagersRoleEnum.TEACHERS])
   @Post(':id/activate')
   activateStudent(@Param() params: IDQueryDTO): Promise<void> {
     return this.studentsService.activeOrDeactive(params.id, true);
@@ -98,6 +105,7 @@ export class StudentsController {
     description: 'Conta do usuário desativada com sucesso',
   })
   @HttpCode(204)
+  @Role([ManagersRoleEnum.COORDINATORS, ManagersRoleEnum.TEACHERS])
   @Post(':id/deactivate')
   deactivateStudent(@Param() params: IDQueryDTO): Promise<void> {
     return this.studentsService.activeOrDeactive(params.id, false);
