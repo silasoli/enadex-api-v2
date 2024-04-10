@@ -62,7 +62,7 @@ export class ProfileController {
         },
       },
     },
-})
+  })
   @ApiBody({ type: UpdateProfileDto })
   @Patch('me')
   public updateOneProfile(
