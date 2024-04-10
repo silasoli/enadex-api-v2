@@ -34,6 +34,9 @@ export class Student {
   unity: UnityEnum;
 
   @Prop({ default: () => true })
+  approved: boolean;
+
+  @Prop({ default: () => true })
   active: boolean;
 }
 
