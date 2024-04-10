@@ -5,7 +5,6 @@ import {
   Body,
   Patch,
   Param,
-  Delete,
   HttpCode,
   UseGuards,
 } from '@nestjs/common';
@@ -81,14 +80,25 @@ export class ManagersController {
     return this.managersService.update(params.id, updateManagerDto);
   }
 
+  @ApiOperation({ summary: 'Ativar conta de um usuário' })
+  @ApiResponse({
+    status: 204,
+    description: 'Conta do usuário ativada com sucesso',
+  })
+  @HttpCode(204)
+  @Post(':id/activate')
+  activateManager(@Param() params: IDQueryDTO): Promise<void> {
+    return this.managersService.activeOrDeactive(params.id, true);
+  }
+
   @ApiOperation({ summary: 'Desativar conta de um usuário' })
   @ApiResponse({
     status: 204,
     description: 'Conta do usuário desativada com sucesso',
   })
   @HttpCode(204)
-  @Delete(':id')
-  remove(@Param() params: IDQueryDTO): Promise<void> {
-    return this.managersService.remove(params.id);
+  @Post(':id/deactivate')
+  deactivateManager(@Param() params: IDQueryDTO): Promise<void> {
+    return this.managersService.activeOrDeactive(params.id, false);
   }
 }
