@@ -81,14 +81,25 @@ export class StudentsController {
     return this.studentsService.update(params.id, UpdateStudentDto);
   }
 
+  @ApiOperation({ summary: 'Ativar conta de um usuário' })
+  @ApiResponse({
+    status: 204,
+    description: 'Conta do usuário ativada com sucesso',
+  })
+  @HttpCode(204)
+  @Post(':id/activate')
+  activateStudent(@Param() params: IDQueryDTO): Promise<void> {
+    return this.studentsService.activeOrDeactive(params.id, true);
+  }
+
   @ApiOperation({ summary: 'Desativar conta de um usuário' })
   @ApiResponse({
     status: 204,
     description: 'Conta do usuário desativada com sucesso',
   })
   @HttpCode(204)
-  @Delete(':id')
-  remove(@Param() params: IDQueryDTO): Promise<void> {
-    return this.studentsService.remove(params.id);
+  @Post(':id/deactivate')
+  deactivateStudent(@Param() params: IDQueryDTO): Promise<void> {
+    return this.studentsService.activeOrDeactive(params.id, false);
   }
 }

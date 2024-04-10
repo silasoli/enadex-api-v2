@@ -86,9 +86,9 @@ export class ManagersService {
     return this.findOne(_id);
   }
 
-  public async remove(_id: string): Promise<void> {
+  public async activeOrDeactive(_id: string, active: boolean): Promise<void> {
     await this.findManagerByID(_id);
-    await this.managerModel.updateOne({ _id }, { active: false });
+    await this.managerModel.updateOne({ _id }, { active });
   }
 
   public async findRole(_id: string): Promise<ManagersRoleEnum> {

@@ -20,5 +20,4 @@ export class CreateManagerDto {
   @IsNotEmpty({ message: 'É necessário informar o cargo do usuário.' })
   @IsEnum(ManagersRoleEnum, { message: 'Cargo não encontrado no sistema.' })
   role: ManagersRoleEnum;
-
 }

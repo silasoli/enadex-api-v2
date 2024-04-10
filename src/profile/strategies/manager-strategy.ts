@@ -20,6 +20,6 @@ export class ManagerStrategy implements ProfileStrategy {
   }
 
   public async disableOneProfile(_id: string): Promise<void> {
-    return this.managersService.remove(_id);
+    return this.managersService.activeOrDeactive(_id, false);
   }
 }
