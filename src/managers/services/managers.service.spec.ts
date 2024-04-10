@@ -34,6 +34,7 @@ const managerModelMock: Partial<Model<ManagerDocument>> = {
     if (_id === managerId) return mockManager;
     return null;
   }),
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   find: jest.fn().mockImplementation((query) => {
     return Promise.resolve([mockManager]); // Adjust if needed
   }),

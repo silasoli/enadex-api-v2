@@ -10,9 +10,9 @@ import { ProfileController } from './controllers/profile.controller';
   providers: [
     ProfileService,
     ProfileStrategyImpl,
-    StudentStrategy, 
+    StudentStrategy,
     ManagerStrategy,
   ],
-  exports: [ProfileService], 
+  exports: [ProfileService],
 })
 export class ProfileModule {}

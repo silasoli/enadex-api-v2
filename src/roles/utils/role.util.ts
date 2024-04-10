@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ManagersRoleEnum } from '../../managers/schemas/manager.entity';
 import { ManagersService } from '../../managers/services/managers.service';
+import { AUTH_ERRORS } from '../../auth/constants/auth-errors';
 
 @Injectable()
 export class RoleUtil {
@@ -10,11 +11,14 @@ export class RoleUtil {
     userid: string,
     requiredRoles: ManagersRoleEnum[],
   ): Promise<boolean> {
-    const userRoles = await this.managersService.findRole(userid);
+    try {
+      const userRoles = await this.managersService.findRole(userid);
 
-    if (!userRoles) return false;
-
-    return this.roleHasAction([userRoles], requiredRoles);
+      if (!userRoles) return false;
+      return this.roleHasAction([userRoles], requiredRoles);
+    } catch (error) {
+      throw AUTH_ERRORS.LACK_PERMISSION;
+    }
   }
 
   public roleHasAction(
