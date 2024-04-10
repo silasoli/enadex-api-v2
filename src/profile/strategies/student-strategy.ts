@@ -20,6 +20,6 @@ export class StudentStrategy implements ProfileStrategy {
   }
 
   public async disableOneProfile(_id: string): Promise<void> {
-    return this.studentsService.remove(_id);
+    return this.studentsService.activeOrDeactive(_id, false);
   }
 }

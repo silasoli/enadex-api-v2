@@ -82,8 +82,8 @@ export class StudentsService {
     return this.findOne(_id);
   }
 
-  public async remove(_id: string): Promise<void> {
+  public async activeOrDeactive(_id: string, active: boolean): Promise<void> {
     await this.findStudentByID(_id);
-    await this.studentsModel.updateOne({ _id }, { active: false });
+    await this.studentsModel.updateOne({ _id }, { active });
   }
 }
