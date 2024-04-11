@@ -44,7 +44,7 @@ export class ManagersService {
   }
 
   private async validatingStudentsEmail(email: string) {
-    const student = await this.studentsService.findByEmail(email, false);
+    const student = await this.studentsService.findByEmail(email, false, false);
     if (student) throw MANAGERS_ERRORS.DUPLICATE_EMAIL;
   }
 

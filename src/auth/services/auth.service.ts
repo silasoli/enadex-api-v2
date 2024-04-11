@@ -51,7 +51,7 @@ export class AuthService {
   ): Promise<UserLoginResponseDto> {
     let user: Manager | Student = null;
 
-    user = await this.studentsService.findByEmail(dto.email, true);
+    user = await this.studentsService.findByEmail(dto.email, true, true);
     if (user) return this.validateUser(dto, user);
 
     user = await this.managersService.findByEmail(dto.email, true);

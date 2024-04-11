@@ -5,7 +5,7 @@ import { Student, StudentDocument, UnityEnum } from '../schemas/student.entity';
 import { Model } from 'mongoose';
 import { faker } from '@faker-js/faker';
 import { ManagersService } from '../../managers/services/managers.service';
-import { CreateStudentDto } from '../dto/create-student.dto';
+import { CreateStudentDto } from '../dto/student-register.dto';
 import { Manager } from 'src/managers/schemas/manager.entity';
 import { UpdateStudentDto } from '../dto/update-student.dto';
 
