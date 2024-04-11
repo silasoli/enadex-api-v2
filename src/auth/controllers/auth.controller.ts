@@ -3,7 +3,7 @@ import { AuthService } from '../services/auth.service';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UserLoginDto } from '../dto/user-login.dto';
 import { UserLoginResponseDto } from '../dto/user-login-response.dto';
-import { StudentRegisterService } from '../../students/services/student-register.service';
+import { StudentsRegisterService } from '../../students/services/students-register.service';
 import { CreateStudentDto } from '../../students/dto/create-student.dto';
 import { StudentResponseDto } from '../../students/dto/student-response.dto';
 
@@ -12,7 +12,7 @@ import { StudentResponseDto } from '../../students/dto/student-response.dto';
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
-    private readonly studentRegisterService: StudentRegisterService,
+    private readonly studentsRegisterService: StudentsRegisterService,
   ) {}
 
   @ApiOperation({ summary: 'Realizar login' })
@@ -35,9 +35,6 @@ export class AuthController {
   @ApiBody({ type: CreateStudentDto })
   @Post('signup')
   public signUp(@Body() dto: CreateStudentDto): Promise<StudentResponseDto> {
-    return this.studentRegisterService.createStudentRegister({
-      ...dto,
-      approved: false,
-    });
+    return this.studentsRegisterService.createStudentRegister(dto);
   }
 }

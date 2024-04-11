@@ -46,7 +46,7 @@ export class StudentsService {
 
     await this.transformBody(dto);
 
-    const created = await this.studentsModel.create(dto);
+    const created = await this.studentsModel.create({ ...dto, active: true });
 
     return new StudentResponseDto(created);
   }
@@ -57,7 +57,7 @@ export class StudentsService {
     return students.map((student) => new StudentResponseDto(student));
   }
 
-  private async findStudentByID(_id: string): Promise<Student> {
+  public async findStudentByID(_id: string): Promise<Student> {
     const student = await this.studentsModel.findById(_id);
 
     if (!student) throw STUDENTS_ERRORS.NOT_FOUND;
