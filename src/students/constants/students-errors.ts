@@ -9,4 +9,8 @@ export const STUDENTS_ERRORS = {
     id: 'STUDENTS-002',
     message: 'Este endereço de e-mail já está em uso.',
   }),
+  NOT_FOUND_REQUEST: new NotFoundException({
+    id: 'STUDENTS-003',
+    message: 'Solicitação não encontrado.',
+  }),
 };

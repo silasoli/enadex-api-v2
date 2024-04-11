@@ -9,7 +9,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { StudentsService } from '../services/students.service';
-import { CreateStudentDto } from '../dto/create-student.dto';
 import { UpdateStudentDto } from '../dto/update-student.dto';
 import {
   ApiOperation,
@@ -24,6 +23,7 @@ import { AuthUserJwtGuard } from '../../auth/guards/auth-user-jwt.guard';
 import { RoleGuard } from '../../roles/guards/role.guard';
 import { Role } from '../../roles/decorators/roles.decorator';
 import { ManagersRoleEnum } from '../../managers/schemas/manager.entity';
+import { CreateStudentDto } from '../dto/create-student.dto';
 
 @ApiBearerAuth()
 @ApiTags('Students')
