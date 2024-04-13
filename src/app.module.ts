@@ -6,6 +6,7 @@ import { ManagersModule } from './managers/managers.module';
 import { StudentsModule } from './students/students.module';
 import { AuthModule } from './auth/auth.module';
 import { RolesModule } from './roles/roles.module';
+import { MailerModule } from './mailer/mailer.module';
 import { ProfileModule } from './profile/profile.module';
 
 @Module({
@@ -16,6 +17,7 @@ import { ProfileModule } from './profile/profile.module';
     StudentsModule,
     AuthModule,
     RolesModule,
+    MailerModule,
     ProfileModule,
   ],
   controllers: [AppController],
