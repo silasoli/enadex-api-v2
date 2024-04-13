@@ -7,6 +7,7 @@ import { StudentsModule } from './students/students.module';
 import { AuthModule } from './auth/auth.module';
 import { RolesModule } from './roles/roles.module';
 import { ProfileModule } from './profile/profile.module';
+import { ForgotPasswordModule } from './forgot-password/forgot-password.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { ProfileModule } from './profile/profile.module';
     AuthModule,
     RolesModule,
     ProfileModule,
+    ForgotPasswordModule,
   ],
   controllers: [AppController],
 })
