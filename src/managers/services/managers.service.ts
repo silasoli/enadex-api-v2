@@ -22,6 +22,15 @@ export class ManagersService {
     private studentsService: StudentsService,
   ) {}
 
+  private async validateCoordinatorEditingTeacher(
+    teacherId: string,
+  ): Promise<void> {
+    const manager = await this.findManagerByID(teacherId);
+
+    if (manager.role === ManagersRoleEnum.COORDINATORS)
+      throw MANAGERS_ERRORS.LACK_PERMISSION;
+  }
+
   public async findByEmail(email: string, active: boolean): Promise<Manager> {
     const filter: FilterQuery<Manager> = { email: email.toLowerCase() };
 
@@ -35,7 +44,7 @@ export class ManagersService {
   }
 
   private async validatingStudentsEmail(email: string) {
-    const student = await this.studentsService.findByEmail(email, false);
+    const student = await this.studentsService.findByEmail(email, false, false);
     if (student) throw MANAGERS_ERRORS.DUPLICATE_EMAIL;
   }
 
@@ -75,6 +84,8 @@ export class ManagersService {
   ): Promise<ManagerResponseDto> {
     await this.findManagerByID(_id);
 
+    await this.validateCoordinatorEditingTeacher(_id);
+
     if (dto.email) await this.validatingStudentsEmail(dto.email);
 
     const rawData = { ...dto };
@@ -86,13 +97,16 @@ export class ManagersService {
     return this.findOne(_id);
   }
 
-  public async remove(_id: string): Promise<void> {
+  public async activeOrDeactive(_id: string, active: boolean): Promise<void> {
     await this.findManagerByID(_id);
-    await this.managerModel.updateOne({ _id }, { active: false });
+
+    await this.validateCoordinatorEditingTeacher(_id);
+
+    await this.managerModel.updateOne({ _id }, { active });
   }
 
   public async findRole(_id: string): Promise<ManagersRoleEnum> {
-    const manager = await this.managerModel.findOne({ _id }, ['roles']);
+    const manager = await this.managerModel.findOne({ _id }, ['role']);
 
     if (!manager) throw MANAGERS_ERRORS.NOT_FOUND;
 

@@ -7,5 +7,5 @@ export interface ILogin {
 
   email: string;
 
-  role?: string
+  role?: string;
 }

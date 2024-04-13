@@ -33,9 +33,11 @@ export class Student {
   @Prop({ required: true, select: true, enum: UnityEnum })
   unity: UnityEnum;
 
-  @Prop({ default: () => true })
+  @Prop({ default: () => false })
+  approved: boolean;
+
+  @Prop({ default: () => false })
   active: boolean;
 }
 
 export const StudentSchema = SchemaFactory.createForClass(Student);
-

@@ -1,5 +1,4 @@
 import { Inject, Injectable, forwardRef } from '@nestjs/common';
-import { CreateStudentDto } from '../dto/create-student.dto';
 import { UpdateStudentDto } from '../dto/update-student.dto';
 import { Student, StudentDocument } from '../schemas/student.entity';
 import { InjectModel } from '@nestjs/mongoose';
@@ -8,6 +7,7 @@ import { StudentResponseDto } from '../dto/student-response.dto';
 import { STUDENTS_ERRORS } from '../constants/students-errors';
 import * as bcrypt from 'bcrypt';
 import { ManagersService } from '../../managers/services/managers.service';
+import { CreateStudentDto } from '../dto/create-student.dto';
 
 @Injectable()
 export class StudentsService {
@@ -18,19 +18,25 @@ export class StudentsService {
     private managersService: ManagersService,
   ) {}
 
-  public async findByEmail(email: string, active: boolean): Promise<Student> {
+  public async findByEmail(
+    email: string,
+    active: boolean,
+    approved: boolean,
+  ): Promise<Student> {
     const filter: FilterQuery<Student> = { email: email.toLowerCase() };
 
     if (active) filter.active = active;
 
+    if (approved) filter.active = approved;
+
     return this.studentsModel.findOne(filter, ['+password']);
   }
 
-  private async transformBody(dto: CreateStudentDto | UpdateStudentDto) {
+  public async transformBody(dto: CreateStudentDto | UpdateStudentDto) {
     if (dto.password) dto.password = await bcrypt.hash(dto.password, 12);
   }
 
-  private async validatingManagersEmail(email: string) {
+  public async validatingManagersEmail(email: string) {
     const manager = await this.managersService.findByEmail(email, false);
     if (manager) throw STUDENTS_ERRORS.DUPLICATE_EMAIL;
   }
@@ -40,29 +46,29 @@ export class StudentsService {
 
     await this.transformBody(dto);
 
-    const created = await this.studentsModel.create(dto);
+    const created = await this.studentsModel.create({ ...dto, active: true });
 
     return new StudentResponseDto(created);
   }
 
   public async findAll(): Promise<StudentResponseDto[]> {
-    const managers = await this.studentsModel.find();
+    const students = await this.studentsModel.find();
 
-    return managers.map((manager) => new StudentResponseDto(manager));
+    return students.map((student) => new StudentResponseDto(student));
   }
 
-  private async findStudentByID(_id: string): Promise<Student> {
-    const manager = await this.studentsModel.findById(_id);
+  public async findStudentByID(_id: string): Promise<Student> {
+    const student = await this.studentsModel.findById(_id);
 
-    if (!manager) throw STUDENTS_ERRORS.NOT_FOUND;
+    if (!student) throw STUDENTS_ERRORS.NOT_FOUND;
 
-    return manager;
+    return student;
   }
 
   public async findOne(_id: string): Promise<StudentResponseDto> {
-    const manager = await this.findStudentByID(_id);
+    const student = await this.findStudentByID(_id);
 
-    return new StudentResponseDto(manager);
+    return new StudentResponseDto(student);
   }
 
   public async update(
@@ -82,8 +88,8 @@ export class StudentsService {
     return this.findOne(_id);
   }
 
-  public async remove(_id: string): Promise<void> {
+  public async activeOrDeactive(_id: string, active: boolean): Promise<void> {
     await this.findStudentByID(_id);
-    await this.studentsModel.updateOne({ _id }, { active: false });
+    await this.studentsModel.updateOne({ _id }, { active });
   }
 }
