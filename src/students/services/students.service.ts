@@ -88,6 +88,14 @@ export class StudentsService {
     return this.findOne(_id);
   }
 
+  public async updatePassword(_id: string, password: string): Promise<void>{
+    const rawData = { password };
+
+    await this.transformBody(rawData);
+
+    await this.studentsModel.updateOne({ _id }, rawData);
+  }
+
   public async activeOrDeactive(_id: string, active: boolean): Promise<void> {
     await this.findStudentByID(_id);
     await this.studentsModel.updateOne({ _id }, { active });

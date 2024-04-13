@@ -12,6 +12,8 @@ import {
 import { Model } from 'mongoose';
 import { ValidateForgotPasswordDto } from '../dto/validate-forgot-password.dto';
 import * as moment from 'moment';
+import { MailerService } from '../../mailer/services/mailer.service';
+import { FORGOT_PASSWORD_ERRORS } from '../constants/forgot-password-errors';
 
 @Injectable()
 export class ForgotPasswordService {
@@ -20,6 +22,7 @@ export class ForgotPasswordService {
     private forgotPasswordModel: Model<ForgotPasswordDocument>,
     private managersService: ManagersService,
     private studentsService: StudentsService,
+    private mailerService: MailerService,
   ) {}
 
   private async findUserByEmail(
@@ -74,7 +77,14 @@ export class ForgotPasswordService {
       otgCode,
     });
 
-    //adicionar função para enviar email.
+    this.mailerService.sendEmailWithTemplate(
+      {
+        emailAddress: user.email,
+        title: 'Código de recuperação de senha',
+      },
+      { email: user.email, name: user.name, otgCode },
+      'recover-password',
+    );
   }
 
   public async findActiveRequestByEmail(
@@ -103,9 +113,13 @@ export class ForgotPasswordService {
     );
   }
 
-  private async findByOtgCode(otgCode: string): Promise<ForgotPassword> {
+  private async findByOtgCode(
+    otgCode: string,
+    email: string,
+  ): Promise<ForgotPassword> {
     return this.forgotPasswordModel.findOne({
       otgCode,
+      email: email.toLocaleLowerCase(),
       invalid: false,
       usedAt: { $exists: false },
     });
@@ -116,30 +130,41 @@ export class ForgotPasswordService {
     password: string,
   ): Promise<void> {
     if ((user as Manager)?.role) {
-      await this.managersService.update(String(user._id), { password });
+      await this.managersService.updatePassword(String(user._id), password);
     } else {
-      await this.studentsService.update(String(user._id), { password });
+      await this.studentsService.updatePassword(String(user._id), password);
     }
   }
 
   public async validate(dto: ValidateForgotPasswordDto): Promise<void> {
-    const forgotPassword = await this.findByOtgCode(dto.otgCode);
-    if (!forgotPassword) return null;
+    const forgotPassword = await this.findByOtgCode(dto.otgCode, dto.email);
+    if (!forgotPassword) throw FORGOT_PASSWORD_ERRORS.INVALID_CODE;
 
     const secondsDiff = moment().diff(forgotPassword.createdAt, 'seconds');
 
     if (secondsDiff > 120) {
       await this.invalidRequest(forgotPassword);
-      console.log('Código infomado é inválido.');
+      throw FORGOT_PASSWORD_ERRORS.INVALID_CODE_TIME;
     }
 
     const user = await this.findUserByEmail(forgotPassword.email);
-    if (!user) console.log('Código infomado é inválido.');
+    if (!user) throw FORGOT_PASSWORD_ERRORS.INVALID_CODE;
 
     await this.updatePassword(user, dto.password);
 
     await this.completeRequest(forgotPassword);
 
-    //enviar email de senha alterado
+    this.mailerService.sendEmailWithTemplate(
+      {
+        emailAddress: user.email,
+        title: 'Senha alterada com sucesso',
+      },
+      {
+        email: user.email,
+        name: user.name,
+        date: new Date().toLocaleDateString('pt-BR'),
+      },
+      'changed-password',
+    );
   }
 }

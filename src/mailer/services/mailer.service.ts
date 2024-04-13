@@ -6,7 +6,7 @@ import { ConfigService } from '@nestjs/config';
 import { SendMailDto } from '../dto/send-mail.dto';
 import * as fs from 'fs';
 import * as path from 'path';
-import ejs from 'ejs';
+import * as ejs from 'ejs';
 import { SendMailWithTemplateDto } from '../dto/send-mail-with-template.dto';
 
 @Injectable()
