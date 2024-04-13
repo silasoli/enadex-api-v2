@@ -72,7 +72,6 @@ export class ForgotPasswordService {
     await this.forgotPasswordModel.create({
       ...dto,
       otgCode,
-      createdAt: new Date(),
     });
 
     //adicionar função para enviar email.

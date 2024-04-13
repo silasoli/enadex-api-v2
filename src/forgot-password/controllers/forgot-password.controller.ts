@@ -15,7 +15,7 @@ export class ForgotPasswordController {
   })
   @HttpCode(204)
   @Post('/request')
-  public forgotPassword(@Body() dto: CreateForgotPasswordDto): Promise<any> {
+  public forgotPassword(@Body() dto: CreateForgotPasswordDto): Promise<void> {
     return this.forgotPasswordService.create(dto);
   }
 
@@ -25,7 +25,7 @@ export class ForgotPasswordController {
   })
   @HttpCode(204)
   @Post('/validate')
-  public validateOTG(@Body() dto: ValidateForgotPasswordDto): Promise<any> {
+  public validateOTG(@Body() dto: ValidateForgotPasswordDto): Promise<void> {
     return this.forgotPasswordService.validate(dto);
   }
 }
