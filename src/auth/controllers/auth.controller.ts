@@ -26,7 +26,7 @@ export class AuthController {
   public signIn(@Body() dto: UserLoginDto): Promise<UserLoginResponseDto> {
     return this.authService.authenticateUser(dto);
   }
-
+  
   @ApiOperation({ summary: 'Realizar cadastro' })
   @ApiResponse({
     status: 201,
