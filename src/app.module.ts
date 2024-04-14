@@ -9,6 +9,7 @@ import { RolesModule } from './roles/roles.module';
 import { MailerModule } from './mailer/mailer.module';
 import { ProfileModule } from './profile/profile.module';
 import { ForgotPasswordModule } from './forgot-password/forgot-password.module';
+import { HealthCheckModule } from './health-check/health-check.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { ForgotPasswordModule } from './forgot-password/forgot-password.module';
     MailerModule,
     ProfileModule,
     ForgotPasswordModule,
+    HealthCheckModule,
   ],
   controllers: [AppController],
 })
