@@ -14,7 +14,10 @@ export class UpdateProfileDto {
   @IsEmail({}, { message: 'O email informado deve ser válido' })
   email: string;
 
-  @ApiProperty({ required: true })
+  @ApiProperty({ 
+    required: true,
+    example: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
+  })
   @IsOptional()
   @IsNotEmpty({ message: 'É necessário informar o semestre do usuário.' })
   @IsIn(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'], {
@@ -22,7 +25,10 @@ export class UpdateProfileDto {
   })
   semester: string;
 
-  @ApiProperty({ required: true })
+  @ApiProperty({
+    required: true,
+    example: Object.keys(UnityEnum)
+  })
   @IsOptional()
   @IsNotEmpty({ message: 'É necessário informar a unidade do usuário.' })
   @IsEnum(UnityEnum, { message: 'Unidade não encontrada no sistema.' })
