@@ -16,7 +16,10 @@ export class CreateManagerDto {
   @IsNotEmpty({ message: 'É necessário informar o password do usuário.' })
   password: string;
 
-  @ApiProperty({ required: true })
+  @ApiProperty({
+    required: true,
+    example: Object.keys(ManagersRoleEnum),
+  })
   @IsNotEmpty({ message: 'É necessário informar o cargo do usuário.' })
   @IsEnum(ManagersRoleEnum, { message: 'Cargo não encontrado no sistema.' })
   role: ManagersRoleEnum;
