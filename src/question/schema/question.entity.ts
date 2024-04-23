@@ -5,6 +5,8 @@ export type QuestionDocument = Question & Document;
 
 @Schema()
 export class StatementPart {
+  _id?: mongoose.ObjectId | string;
+
   @Prop({ required: true })
   description: string;
   //@Prop()
@@ -13,6 +15,8 @@ export class StatementPart {
 
 @Schema()
 export class OptionPart {
+  _id?: mongoose.ObjectId | string;
+
   @Prop({ required: true })
   description: string;
 
