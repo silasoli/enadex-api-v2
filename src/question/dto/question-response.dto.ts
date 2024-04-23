@@ -1,17 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Question } from '../schema/question.entity';
+import mongoose from 'mongoose';
 
 export class StatementPartResponseDto {
-  @ApiProperty({ required: true })
-  _id: string;
+  @ApiProperty({ required: true, example: 'string' })
+  _id?: mongoose.ObjectId | string;
 
   @ApiProperty({ required: true })
   description: string;
 }
 
 export class OptionPartResponseDto {
-  @ApiProperty({ required: true })
-  _id: string;
+  @ApiProperty({ required: true, example: 'string' })
+  _id?: mongoose.ObjectId | string;
 
   @ApiProperty({ required: true })
   description: string;
@@ -22,11 +23,11 @@ export class OptionPartResponseDto {
 
 export class QuestionResponseDto {
   constructor(question: Question) {
-    Object.assign(this, question);
+    return question;
   }
 
-  @ApiProperty({ required: true })
-  _id: string;
+  @ApiProperty({ required: true, example: 'string' })
+  _id?: mongoose.ObjectId | string;
 
   @ApiProperty({ required: true, type: [StatementPartResponseDto] })
   statements: StatementPartResponseDto[];
