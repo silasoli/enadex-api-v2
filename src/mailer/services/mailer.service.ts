@@ -17,18 +17,22 @@ export class MailerService {
     const mailHost = config.get('MAIL_HOST');
     if (!mailHost) throw MAILER_ERRORS.MAIL_HOST;
 
-    this.transporter = nodemailer.createTransport({
-      host: config.get('MAIL_HOST'),
-      port: 465,
-      secure: true,
-      auth: {
-        user: config.get('MAIL_USER'),
-        pass: config.get('MAIL_PASSWORD'),
-      },
-      tls: {
-        rejectUnauthorized: false,
-      },
-    });
+    try {
+      this.transporter = nodemailer.createTransport({
+        host: config.get('MAIL_HOST'),
+        port: 465,
+        secure: true,
+        auth: {
+          user: config.get('MAIL_USER'),
+          pass: config.get('MAIL_PASSWORD'),
+        },
+        tls: {
+          rejectUnauthorized: false,
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
   }
 
   public sendEmailWithTemplate(
@@ -65,7 +69,7 @@ export class MailerService {
     //   html: dto.message,
     // });
 
-    const sended = await new Promise((resolve, reject) => {
+    await new Promise((resolve, reject) => {
       // send mail
       this.transporter.sendMail(
         {
@@ -76,16 +80,14 @@ export class MailerService {
         },
         (err, info) => {
           if (err) {
-            console.error(err);
+            throw err;
             reject(err);
           } else {
-            console.log(info);
+            throw info;
             resolve(info);
           }
         },
       );
     });
-
-    return sended;
   }
 }
