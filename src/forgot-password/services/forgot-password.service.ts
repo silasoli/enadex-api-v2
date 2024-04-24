@@ -77,7 +77,7 @@ export class ForgotPasswordService {
       otgCode,
     });
 
-    this.mailerService.sendEmailWithTemplate(
+    await this.mailerService.sendEmailWithTemplate(
       {
         emailAddress: user.email,
         title: 'Código de recuperação de senha',
