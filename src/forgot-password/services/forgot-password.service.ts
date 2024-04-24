@@ -168,7 +168,7 @@ export class ForgotPasswordService {
         'changed-password',
       );
     } catch (error) {
-      throw error;
+      return error;
     }
   }
 }
