@@ -154,7 +154,7 @@ export class ForgotPasswordService {
 
     await this.completeRequest(forgotPassword);
 
-    this.mailerService.sendEmailWithTemplate(
+    await this.mailerService.sendEmailWithTemplate(
       {
         emailAddress: user.email,
         title: 'Senha alterada com sucesso',

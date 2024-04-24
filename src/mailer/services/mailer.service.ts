@@ -17,29 +17,25 @@ export class MailerService {
     const mailHost = config.get('MAIL_HOST');
     if (!mailHost) throw MAILER_ERRORS.MAIL_HOST;
 
-    try {
-      this.transporter = nodemailer.createTransport({
-        host: config.get('MAIL_HOST'),
-        port: 465,
-        secure: true,
-        auth: {
-          user: config.get('MAIL_USER'),
-          pass: config.get('MAIL_PASSWORD'),
-        },
-        tls: {
-          rejectUnauthorized: false,
-        },
-      });
-    } catch (error) {
-      throw error;
-    }
+    this.transporter = nodemailer.createTransport({
+      host: config.get('MAIL_HOST'),
+      port: 587,
+      secure: false,
+      auth: {
+        user: config.get('MAIL_USER'),
+        pass: config.get('MAIL_PASSWORD'),
+      },
+      tls: {
+        rejectUnauthorized: false
+      }
+    });
   }
 
   public sendEmailWithTemplate(
     dto: SendMailWithTemplateDto,
     context: object,
     template: string,
-  ): Promise<any> {
+  ): Promise<SMTPTransport.SentMessageInfo> {
     const filename = path.join(
       process.cwd(),
       'src/mailer/templates',
@@ -59,35 +55,14 @@ export class MailerService {
     });
   }
 
-  private async mailSender(dto: SendMailDto) {
+  private mailSender(dto: SendMailDto) {
     if (!this.transporter) throw MAILER_ERRORS.TRANSPORTER;
 
-    // return this.transporter.sendMail({
-    //   to: dto.emailAddress,
-    //   from: this.config.get('MAIL_FROM'),
-    //   subject: dto.title,
-    //   html: dto.message,
-    // });
-
-    await new Promise((resolve, reject) => {
-      // send mail
-      this.transporter.sendMail(
-        {
-          to: dto.emailAddress,
-          from: this.config.get('MAIL_FROM'),
-          subject: dto.title,
-          html: dto.message,
-        },
-        (err, info) => {
-          if (err) {
-            throw err;
-            reject(err);
-          } else {
-            throw info;
-            resolve(info);
-          }
-        },
-      );
+    return this.transporter.sendMail({
+      to: dto.emailAddress,
+      from: this.config.get('MAIL_FROM'),
+      subject: dto.title,
+      html: dto.message,
     });
   }
 }
