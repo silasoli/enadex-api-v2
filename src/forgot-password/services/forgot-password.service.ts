@@ -11,7 +11,7 @@ import {
 } from '../schema/forgot-password.entity';
 import { Model } from 'mongoose';
 import { ValidateForgotPasswordDto } from '../dto/validate-forgot-password.dto';
-import * as moment from 'moment';
+import moment from 'moment';
 import { MailerService } from '../../mailer/services/mailer.service';
 import { FORGOT_PASSWORD_ERRORS } from '../constants/forgot-password-errors';
 
