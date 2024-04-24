@@ -19,8 +19,8 @@ export class MailerService {
 
     this.transporter = nodemailer.createTransport({
       host: config.get('MAIL_HOST'),
-      port: 587,
-      secure: false,
+      port: 465,
+      secure: true,
       auth: {
         user: config.get('MAIL_USER'),
         pass: config.get('MAIL_PASSWORD'),
@@ -35,7 +35,7 @@ export class MailerService {
     dto: SendMailWithTemplateDto,
     context: object,
     template: string,
-  ): Promise<void> {
+  ): Promise<any> {
     const filename = path.join(
       process.cwd(),
       'src/mailer/templates',
@@ -65,7 +65,7 @@ export class MailerService {
     //   html: dto.message,
     // });
 
-    await new Promise((resolve, reject) => {
+    const sended = await new Promise((resolve, reject) => {
       // send mail
       this.transporter.sendMail(
         {
@@ -85,5 +85,7 @@ export class MailerService {
         },
       );
     });
+
+    return sended;
   }
 }
