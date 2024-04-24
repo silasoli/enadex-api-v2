@@ -23,7 +23,7 @@ export class ForgotPasswordService {
     private managersService: ManagersService,
     private studentsService: StudentsService,
     private mailerService: MailerService,
-  ) {}
+  ) { }
 
   private async findUserByEmail(
     email: string,
@@ -137,34 +137,38 @@ export class ForgotPasswordService {
   }
 
   public async validate(dto: ValidateForgotPasswordDto): Promise<void> {
-    const forgotPassword = await this.findByOtgCode(dto.otgCode, dto.email);
-    if (!forgotPassword) throw FORGOT_PASSWORD_ERRORS.INVALID_CODE;
+    try {
+      const forgotPassword = await this.findByOtgCode(dto.otgCode, dto.email);
+      if (!forgotPassword) throw FORGOT_PASSWORD_ERRORS.INVALID_CODE;
 
-    const secondsDiff = moment().diff(forgotPassword.createdAt, 'seconds');
+      const secondsDiff = moment().diff(forgotPassword.createdAt, 'seconds');
 
-    if (secondsDiff > 120) {
-      await this.invalidRequest(forgotPassword);
-      throw FORGOT_PASSWORD_ERRORS.INVALID_CODE_TIME;
+      if (secondsDiff > 120) {
+        await this.invalidRequest(forgotPassword);
+        throw FORGOT_PASSWORD_ERRORS.INVALID_CODE_TIME;
+      }
+
+      const user = await this.findUserByEmail(forgotPassword.email);
+      if (!user) throw FORGOT_PASSWORD_ERRORS.INVALID_CODE;
+
+      await this.updatePassword(user, dto.password);
+
+      await this.completeRequest(forgotPassword);
+
+      await this.mailerService.sendEmailWithTemplate(
+        {
+          emailAddress: user.email,
+          title: 'Senha alterada com sucesso',
+        },
+        {
+          email: user.email,
+          name: user.name,
+          date: new Date().toLocaleDateString('pt-BR'),
+        },
+        'changed-password',
+      );
+    } catch (error) {
+      throw error;
     }
-
-    const user = await this.findUserByEmail(forgotPassword.email);
-    if (!user) throw FORGOT_PASSWORD_ERRORS.INVALID_CODE;
-
-    await this.updatePassword(user, dto.password);
-
-    await this.completeRequest(forgotPassword);
-
-    await this.mailerService.sendEmailWithTemplate(
-      {
-        emailAddress: user.email,
-        title: 'Senha alterada com sucesso',
-      },
-      {
-        email: user.email,
-        name: user.name,
-        date: new Date().toLocaleDateString('pt-BR'),
-      },
-      'changed-password',
-    );
   }
 }
