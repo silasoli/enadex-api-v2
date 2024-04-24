@@ -25,7 +25,9 @@ export class MailerService {
         user: config.get('MAIL_USER'),
         pass: config.get('MAIL_PASSWORD'),
       },
-      ignoreTLS: true,
+      tls: {
+        rejectUnauthorized: false
+      }
     });
   }
 
