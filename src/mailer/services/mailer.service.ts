@@ -35,7 +35,7 @@ export class MailerService {
     dto: SendMailWithTemplateDto,
     context: object,
     template: string,
-  ): Promise<SMTPTransport.SentMessageInfo> {
+  ): Promise<void> {
     const filename = path.join(
       process.cwd(),
       'src/mailer/templates',
