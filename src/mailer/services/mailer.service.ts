@@ -26,8 +26,8 @@ export class MailerService {
         pass: config.get('MAIL_PASSWORD'),
       },
       tls: {
-        rejectUnauthorized: false
-      }
+        rejectUnauthorized: false,
+      },
     });
   }
 
@@ -55,14 +55,35 @@ export class MailerService {
     });
   }
 
-  private mailSender(dto: SendMailDto) {
+  private async mailSender(dto: SendMailDto) {
     if (!this.transporter) throw MAILER_ERRORS.TRANSPORTER;
 
-    return this.transporter.sendMail({
-      to: dto.emailAddress,
-      from: this.config.get('MAIL_FROM'),
-      subject: dto.title,
-      html: dto.message,
+    // return this.transporter.sendMail({
+    //   to: dto.emailAddress,
+    //   from: this.config.get('MAIL_FROM'),
+    //   subject: dto.title,
+    //   html: dto.message,
+    // });
+
+    await new Promise((resolve, reject) => {
+      // send mail
+      this.transporter.sendMail(
+        {
+          to: dto.emailAddress,
+          from: this.config.get('MAIL_FROM'),
+          subject: dto.title,
+          html: dto.message,
+        },
+        (err, info) => {
+          if (err) {
+            console.error(err);
+            reject(err);
+          } else {
+            console.log(info);
+            resolve(info);
+          }
+        },
+      );
     });
   }
 }
