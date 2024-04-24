@@ -136,7 +136,7 @@ export class ForgotPasswordService {
     }
   }
 
-  public async validate(dto: ValidateForgotPasswordDto): Promise<void> {
+  public async validate(dto: ValidateForgotPasswordDto): Promise<any> {
     try {
       const forgotPassword = await this.findByOtgCode(dto.otgCode, dto.email);
       if (!forgotPassword) throw FORGOT_PASSWORD_ERRORS.INVALID_CODE;
@@ -168,6 +168,7 @@ export class ForgotPasswordService {
         'changed-password',
       );
     } catch (error) {
+      console.log(error)
       return error;
     }
   }
