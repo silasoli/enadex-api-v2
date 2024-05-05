@@ -65,6 +65,8 @@ export const MongoExceptionErrors = {
       username: 'O nome de usuário já está em uso.',
       name: 'Este nome já está em uso.',
       email: 'Este endereço de e-mail já está em uso.',
+      registration: 'Esta Matrícula já está em uso.',
+      slug: 'Este Curso já existe.',
       default: 'Erro de chave duplicada.',
     },
   },

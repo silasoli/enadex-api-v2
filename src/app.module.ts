@@ -11,6 +11,7 @@ import { ProfileModule } from './profile/profile.module';
 import { ForgotPasswordModule } from './forgot-password/forgot-password.module';
 import { HealthCheckModule } from './health-check/health-check.module';
 import { QuestionModule } from './question/question.module';
+import { CoursesModule } from './courses/courses.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { QuestionModule } from './question/question.module';
     ForgotPasswordModule,
     HealthCheckModule,
     QuestionModule,
+    CoursesModule,
   ],
   controllers: [AppController],
 })
