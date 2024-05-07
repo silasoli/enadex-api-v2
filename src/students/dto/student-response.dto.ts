@@ -1,9 +1,19 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Student } from '../schemas/student.entity';
+import { CourseResponseDto } from '../../question/dto/question-response.dto';
 
 export class StudentResponseDto {
   constructor(student: Student) {
-    const { _id, name, email, registration, semester, unity, active } = student;
+    const {
+      _id,
+      name,
+      email,
+      registration,
+      semester,
+      course_id,
+      unity,
+      active,
+    } = student;
 
     return {
       _id: String(_id),
@@ -11,6 +21,7 @@ export class StudentResponseDto {
       email,
       registration,
       semester,
+      course_id,
       unity,
       active,
     };
@@ -30,6 +41,9 @@ export class StudentResponseDto {
 
   @ApiProperty({ required: true })
   semester: string;
+
+  @ApiProperty({ required: true, type: CourseResponseDto })
+  course_id: CourseResponseDto;
 
   @ApiProperty({ required: true })
   unity: string;

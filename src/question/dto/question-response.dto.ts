@@ -10,6 +10,14 @@ export class StatementPartResponseDto {
   description: string;
 }
 
+export class CourseResponseDto {
+  @ApiProperty({ required: true, example: 'string' })
+  _id?: mongoose.ObjectId | string;
+
+  @ApiProperty({ required: true })
+  name: string;
+}
+
 export class OptionPartResponseDto {
   @ApiProperty({ required: true, example: 'string' })
   _id?: mongoose.ObjectId | string;
@@ -37,6 +45,9 @@ export class QuestionResponseDto {
 
   @ApiProperty({ required: true })
   isSpecific: boolean;
+
+  @ApiProperty({ required: true, type: CourseResponseDto })
+  course_id: CourseResponseDto;
 
   @ApiProperty({ required: true })
   active: boolean;

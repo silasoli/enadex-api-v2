@@ -4,6 +4,7 @@ import {
   ArrayMaxSize,
   ArrayMinSize,
   IsBoolean,
+  IsMongoId,
   IsNotEmpty,
   ValidateIf,
   ValidateNested,
@@ -50,6 +51,12 @@ export class CreateQuestionDto {
   @IsNotEmpty()
   @IsBoolean()
   isSpecific: boolean;
+
+  @ApiProperty({ required: true })
+  @ValidateIf((object) => !object.sketch || object.isSpecific)
+  @IsNotEmpty()
+  @IsMongoId()
+  course_id: string;
 
   @ApiProperty({ required: true })
   @ValidateIf((object) => !object.sketch)
