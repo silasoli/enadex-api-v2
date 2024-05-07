@@ -52,7 +52,9 @@ export class QuestionService {
   }
 
   public async findQuestionByID(_id: string): Promise<Question> {
-    const question = await this.questionModel.findById(_id);
+    const question = await this.questionModel
+      .findById(_id)
+      .populate({ path: 'course_id' });
 
     if (!question) throw QUESTIONS_ERRORS.NOT_FOUND;
 
