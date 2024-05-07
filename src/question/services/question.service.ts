@@ -36,13 +36,17 @@ export class QuestionService {
 
     if (dto.sketch) this.checkIfHaveCorrectOption(dto.options);
 
+    if (!dto.isSpecific) dto.course_id = null;
+
     const created = await this.questionModel.create(dto);
 
     return new QuestionResponseDto(created);
   }
 
   public async findAll(): Promise<QuestionResponseDto[]> {
-    const data = await this.questionModel.find();
+    const data = await this.questionModel
+      .find()
+      .populate({ path: 'course_id' });
 
     return data.map((item) => new QuestionResponseDto(item));
   }
@@ -137,6 +141,8 @@ export class QuestionService {
       // dto.options = this.validateOptionsUpdate(entity.options, dto.options);
       this.checkIfHaveCorrectOption(dto.options);
     }
+
+    if (dto?.isSpecific === false) dto.course_id = null;
 
     await this.questionModel.updateOne({ _id }, dto);
 
