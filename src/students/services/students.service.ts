@@ -52,13 +52,17 @@ export class StudentsService {
   }
 
   public async findAll(): Promise<StudentResponseDto[]> {
-    const students = await this.studentsModel.find();
+    const students = await this.studentsModel
+      .find()
+      .populate({ path: 'course_id' });
 
     return students.map((student) => new StudentResponseDto(student));
   }
 
   public async findStudentByID(_id: string): Promise<Student> {
-    const student = await this.studentsModel.findById(_id);
+    const student = await this.studentsModel
+      .findById(_id)
+      .populate({ path: 'course_id' });
 
     if (!student) throw STUDENTS_ERRORS.NOT_FOUND;
 
@@ -88,7 +92,7 @@ export class StudentsService {
     return this.findOne(_id);
   }
 
-  public async updatePassword(_id: string, password: string): Promise<void>{
+  public async updatePassword(_id: string, password: string): Promise<void> {
     const rawData = { password };
 
     await this.transformBody(rawData);
