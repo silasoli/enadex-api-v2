@@ -1,5 +1,6 @@
 import { SchemaFactory, Schema, Prop } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
+import { Course } from '../../courses/schema/course.entity';
 
 export type QuestionDocument = Question & Document;
 
@@ -38,7 +39,13 @@ export class Question {
 
   @Prop({ required: true, default: true })
   isSpecific: boolean;
-  //course: ObjectID
+
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Course',
+    required: false,
+  })
+  course_id: Course | null;
 
   @Prop({ required: true, default: true })
   active: boolean;

@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
+import { Course } from '../../courses/schema/course.entity';
 
 export enum UnityEnum {
   ITABUNA = 'ITABUNA',
@@ -29,6 +30,13 @@ export class Student {
 
   @Prop({ required: true, select: true })
   semester: string;
+
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Course',
+    required: true,
+  })
+  course_id: Course;
 
   @Prop({ required: true, select: true, enum: UnityEnum })
   unity: UnityEnum;

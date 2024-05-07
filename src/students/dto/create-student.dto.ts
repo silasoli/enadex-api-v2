@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsEnum, IsIn, IsNotEmpty } from 'class-validator';
+import { IsEmail, IsEnum, IsIn, IsMongoId, IsNotEmpty } from 'class-validator';
 import { UnityEnum } from '../schemas/student.entity';
 
 export class CreateStudentDto {
@@ -31,6 +31,11 @@ export class CreateStudentDto {
     message: 'O semestre deve ser 1, 2, 3, 4, 5, 6, 7, 8, 9 e 10.',
   })
   semester: string;
+
+  @ApiProperty({ required: true })
+  @IsNotEmpty({ message: 'É necessário informar o curso.' })
+  @IsMongoId({ message: 'O Curso deve ser valido. ' })
+  course_id: string;
 
   @ApiProperty({
     required: true,
