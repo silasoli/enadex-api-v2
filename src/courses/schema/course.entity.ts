@@ -3,13 +3,12 @@ import mongoose from 'mongoose';
 
 export type CourseDocument = Course & Document;
 
-
 @Schema({ timestamps: true })
 export class Course {
   _id?: mongoose.ObjectId | string;
 
   @Prop({ required: true, unique: true, lowercase: true })
-  name: string
+  name: string;
 
   @Prop({ required: true, unique: true, lowercase: true })
   slug: string;

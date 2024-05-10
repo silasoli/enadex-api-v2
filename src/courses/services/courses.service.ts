@@ -19,13 +19,12 @@ export class CoursesService {
     return slug.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
   }
 
-
   public async create(dto: CreateCourseDto): Promise<CourseResponseDto> {
     const slug = this.createSlugByName(dto.name);
 
     const created = await this.courseModel.create({ ...dto, slug });
 
-    return new CourseResponseDto(created);  
+    return new CourseResponseDto(created);
   }
 
   public async findAll(): Promise<CourseResponseDto[]> {
