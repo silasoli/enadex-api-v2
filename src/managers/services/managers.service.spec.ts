@@ -16,7 +16,7 @@ import { getModelToken } from '@nestjs/mongoose';
 const managerId = faker.database.mongodbObjectId();
 const managerEmail = faker.internet.email();
 const managerName = faker.person.fullName();
-const managerRole = ManagersRoleEnum.COORDINATORS;
+const managerRole = ManagersRoleEnum.TEACHERS;
 
 const mockManager = {
   _id: managerId,
@@ -47,12 +47,6 @@ const managerModelMock: Partial<Model<ManagerDocument>> = {
       return { nModified: 1 };
     }
     return { nModified: 0 };
-  }),
-  deleteOne: jest.fn().mockImplementation((query) => {
-    if (query._id === managerId) {
-      return { deletedCount: 1 };
-    }
-    return { deletedCount: 0 };
   }),
 };
 
@@ -171,30 +165,6 @@ describe('ManagersService', () => {
     });
   });
 
-  describe('deleteById', () => {
-    it('should delete a manager successfully', async () => {
-      const deleteManager = await managersService.remove(mockManager._id);
-
-      expect(deleteManager).toBeUndefined();
-      expect(managerModel.updateOne).toHaveBeenCalled();
-      expect(managerModel.findById).toHaveBeenCalled();
-    });
-
-    it('should return MANAGERS_ERRORS.NOT_FOUND', async () => {
-      await expect(
-        managersService.remove('595e867fe9af41af7f111234'),
-      ).rejects.toThrow('Usuário não encontrado.');
-    });
-
-    it('should throw an exception', () => {
-      jest.spyOn(managerModel, 'updateOne').mockRejectedValue(new Error());
-
-      expect(
-        managersService.remove('595e867fe9af41af7f111234'),
-      ).rejects.toThrow();
-    });
-  });
-
   describe('create', () => {
     it('should create a new manager', async () => {
       const mockManagerDto: CreateManagerDto = {
@@ -293,6 +263,114 @@ describe('ManagersService', () => {
         managersService.update(mockManager._id, mockManagerDto),
       ).rejects.toThrow('Este endereço de e-mail já está em uso.');
     });
+
+    it('should return MANAGERS_ERRORS.LACK_PERMISSION', async () => {
+      const mockManagerDto: UpdateManagerDto = {
+        password: faker.internet.password(),
+      };
+
+      const coordinatorsMockManager = {
+        _id: managerId,
+        name: managerName,
+        email: managerEmail,
+        role: ManagersRoleEnum.COORDINATORS,
+      };
+
+      jest
+        .spyOn(managerModel, 'findById')
+        .mockResolvedValue(coordinatorsMockManager);
+
+      await expect(
+        managersService.update(coordinatorsMockManager._id, mockManagerDto),
+      ).rejects.toThrow('Usuário não tem permissão.');
+    });
+  });
+
+  describe('updatePassword', () => {
+    it('should update manager password', async () => {
+      const password = faker.internet.password();
+
+      jest
+        .spyOn(managerModel, 'updateOne')
+        .mockResolvedValue({ nModified: 1 } as any);
+
+      await managersService.updatePassword(mockManager._id, password);
+
+      expect(managerModel.updateOne).toHaveBeenCalledWith(
+        { _id: managerId },
+        { password: expect.any(String) },
+      );
+    });
+
+    it('shouldnt update manager password', async () => {
+      jest
+        .spyOn(managerModel, 'updateOne')
+        .mockResolvedValue({ nModified: 0 } as any);
+
+      await managersService.updatePassword(
+        '595e867fe9af41af7f111234',
+        faker.internet.password(),
+      );
+
+      expect(managerModel.updateOne).toHaveBeenCalled();
+    });
+  });
+
+  describe('activeOrDeactive', () => {
+    it('should active manager', async () => {
+      jest.spyOn(managerModel, 'findById').mockResolvedValue(mockManager);
+      jest
+        .spyOn(managerModel, 'updateOne')
+        .mockResolvedValue({ nModified: 1 } as any);
+
+      await managersService.activeOrDeactive(mockManager._id, true);
+
+      expect(managerModel.findById).toHaveBeenCalledWith(mockManager._id);
+      expect(managerModel.updateOne).toHaveBeenCalledWith(
+        { _id: managerId },
+        { active: true },
+      );
+    });
+
+    it('should deactive manager', async () => {
+      jest.spyOn(managerModel, 'findById').mockResolvedValue(mockManager);
+      jest
+        .spyOn(managerModel, 'updateOne')
+        .mockResolvedValue({ nModified: 1 } as any);
+
+      await managersService.activeOrDeactive(mockManager._id, false);
+
+      expect(managerModel.findById).toHaveBeenCalledWith(mockManager._id);
+      expect(managerModel.updateOne).toHaveBeenCalledWith(
+        { _id: managerId },
+        { active: false },
+      );
+    });
+
+    it('should return MANAGERS_ERRORS.NOT_FOUND', async () => {
+      jest.spyOn(managerModel, 'findById').mockReturnValueOnce(null);
+
+      await expect(
+        managersService.activeOrDeactive('595e867fe9af41af7f111234', true),
+      ).rejects.toThrow('Usuário não encontrado.');
+    });
+
+    it('should return MANAGERS_ERRORS.LACK_PERMISSION', async () => {
+      const coordinatorsMockManager = {
+        _id: managerId,
+        name: managerName,
+        email: managerEmail,
+        role: ManagersRoleEnum.COORDINATORS,
+      };
+
+      jest
+        .spyOn(managerModel, 'findById')
+        .mockResolvedValue(coordinatorsMockManager);
+
+      await expect(
+        managersService.activeOrDeactive(coordinatorsMockManager._id, true),
+      ).rejects.toThrow('Usuário não tem permissão.');
+    });
   });
 
   describe('findRole', () => {
@@ -314,7 +392,7 @@ describe('ManagersService', () => {
 
       expect(managerModel.findOne).toHaveBeenCalledWith(
         { _id: mockManager._id },
-        ['roles'],
+        ['role'],
       );
       expect(managerRole).toEqual(mockManager.role);
     });

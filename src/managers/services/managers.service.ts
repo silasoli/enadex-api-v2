@@ -97,7 +97,7 @@ export class ManagersService {
     return this.findOne(_id);
   }
 
-  public async updatePassword(_id: string, password: string): Promise<void>{
+  public async updatePassword(_id: string, password: string): Promise<void> {
     const rawData = { password };
 
     await this.transformBody(rawData);

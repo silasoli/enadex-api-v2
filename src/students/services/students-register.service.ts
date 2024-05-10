@@ -32,7 +32,9 @@ export class StudentsRegisterService {
   }
 
   public async findAllStudentRegister(): Promise<StudentResponseDto[]> {
-    const students = await this.studentsModel.find({ approved: false });
+    const students = await this.studentsModel
+      .find({ approved: false })
+      .populate({ path: 'course_id' });
 
     return students.map((student) => new StudentResponseDto(student));
   }

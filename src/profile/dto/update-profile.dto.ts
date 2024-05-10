@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsEmail, IsIn, IsEnum, IsOptional } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsEmail,
+  IsIn,
+  IsEnum,
+  IsOptional,
+  IsMongoId,
+} from 'class-validator';
 import { UnityEnum } from '../../students/schemas/student.entity';
 
 export class UpdateProfileDto {
@@ -14,9 +21,9 @@ export class UpdateProfileDto {
   @IsEmail({}, { message: 'O email informado deve ser válido' })
   email: string;
 
-  @ApiProperty({ 
+  @ApiProperty({
     required: true,
-    example: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
+    example: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
   })
   @IsOptional()
   @IsNotEmpty({ message: 'É necessário informar o semestre do usuário.' })
@@ -25,9 +32,15 @@ export class UpdateProfileDto {
   })
   semester: string;
 
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsNotEmpty({ message: 'É necessário informar o curso.' })
+  @IsMongoId({ message: 'O Curso deve ser valido. ' })
+  course_id: string;
+
   @ApiProperty({
     required: true,
-    example: Object.keys(UnityEnum)
+    example: Object.keys(UnityEnum),
   })
   @IsOptional()
   @IsNotEmpty({ message: 'É necessário informar a unidade do usuário.' })
