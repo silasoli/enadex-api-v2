@@ -27,7 +27,6 @@ export class OptionPartDto {
 
 export class CreateQuestionDto {
   @ApiProperty({ required: true, type: [StatementPartDto] })
-  @ValidateIf((object) => !object.sketch)
   @ArrayMinSize(1, {
     message: 'Uma questão deve conter pelo menos 1 enunciado',
   })
@@ -37,7 +36,6 @@ export class CreateQuestionDto {
   statements: StatementPartDto[];
 
   @ApiProperty({ required: true, type: [OptionPartDto] })
-  @ValidateIf((object) => !object.sketch)
   @ArrayMinSize(2, {
     message: 'Uma questão deve conter pelo menos 2 alternativas',
   })
@@ -47,28 +45,20 @@ export class CreateQuestionDto {
   options: OptionPartDto[];
 
   @ApiProperty({ required: true })
-  @ValidateIf((object) => !object.sketch)
   @IsNotEmpty()
   @IsBoolean()
   isSpecific: boolean;
 
   @ApiProperty({ required: true })
-  @ValidateIf((object) => !object.sketch || object.isSpecific)
+  @ValidateIf((object) => object.isSpecific)
   @IsNotEmpty()
   @IsMongoId()
   course_id: string;
 
   @ApiProperty({ required: true })
-  @ValidateIf((object) => !object.sketch)
   @IsNotEmpty()
   @IsBoolean()
   active: boolean;
-
-  @ApiProperty({ required: true })
-  @ValidateIf((object) => !object.sketch)
-  @IsNotEmpty()
-  @IsBoolean()
-  sketch: boolean;
 }
 
 

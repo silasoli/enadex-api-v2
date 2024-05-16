@@ -17,10 +17,6 @@ export class QuestionService {
     private questionModel: Model<QuestionDocument>,
   ) {}
 
-  private validateSketch(active: boolean, sketch: boolean): void {
-    if (active && sketch) throw QUESTIONS_ERRORS.ACTIVE_SKETCH;
-  }
-
   private checkIfHaveCorrectOption(
     options: OptionPartDto[] | UpdateOptionPartDto[],
   ): void {
@@ -32,9 +28,7 @@ export class QuestionService {
   }
 
   public async create(dto: CreateQuestionDto): Promise<QuestionResponseDto> {
-    this.validateSketch(dto.active, dto.sketch);
-
-    if (dto.sketch) this.checkIfHaveCorrectOption(dto.options);
+    this.checkIfHaveCorrectOption(dto.options);
 
     if (!dto.isSpecific) dto.course_id = null;
 
@@ -131,13 +125,7 @@ export class QuestionService {
     _id: string,
     dto: UpdateQuestionDto,
   ): Promise<QuestionResponseDto> {
-    const entity = await this.findQuestionByID(_id);
-
-    if (dto?.active || dto?.sketch)
-      this.validateSketch(
-        dto.active ?? entity.active,
-        dto.sketch ?? entity.sketch,
-      );
+    await this.findQuestionByID(_id);
 
     if (dto?.options) {
       // dto.options = this.validateOptionsUpdate(entity.options, dto.options);

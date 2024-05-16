@@ -53,9 +53,6 @@ export class QuestionResponseDto {
   active: boolean;
 
   @ApiProperty({ required: true })
-  sketch: boolean;
-
-  @ApiProperty({ required: true })
   createdAt: Date;
 
   @ApiProperty({ required: true })
