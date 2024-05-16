@@ -36,7 +36,7 @@ export class QuestionController {
     type: QuestionResponseDto,
     description: 'Question create returned successfully',
   })
-  @Role([ManagersRoleEnum.COORDINATORS])
+  @Role([ManagersRoleEnum.COORDINATORS, ManagersRoleEnum.TEACHERS])
   @Post()
   create(@Body() dto: CreateQuestionDto) {
     return this.questionService.create(dto);
@@ -47,7 +47,7 @@ export class QuestionController {
     type: QuestionResponseDto,
     description: 'Questions listing returned successfully',
   })
-  @Role([ManagersRoleEnum.COORDINATORS])
+  @Role([ManagersRoleEnum.COORDINATORS, ManagersRoleEnum.TEACHERS])
   @Get()
   findAll(): Promise<QuestionResponseDto[]> {
     return this.questionService.findAll();
@@ -58,7 +58,7 @@ export class QuestionController {
     type: QuestionResponseDto,
     description: 'Question returned successfully',
   })
-  @Role([ManagersRoleEnum.COORDINATORS])
+  @Role([ManagersRoleEnum.COORDINATORS, ManagersRoleEnum.TEACHERS])
   @Get(':id')
   findOne(@Param() params: IDQueryDTO): Promise<QuestionResponseDto> {
     return this.questionService.findOne(params.id);
@@ -69,7 +69,7 @@ export class QuestionController {
     type: QuestionResponseDto,
     description: 'Question update returned successfully',
   })
-  @Role([ManagersRoleEnum.COORDINATORS])
+  @Role([ManagersRoleEnum.COORDINATORS, ManagersRoleEnum.TEACHERS])
   @Patch(':id')
   update(
     @Param() params: IDQueryDTO,
