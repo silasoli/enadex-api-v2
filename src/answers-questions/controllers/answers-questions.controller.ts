@@ -38,7 +38,6 @@ export class AnswersQuestionsController {
     return this.answersQuestionsService.create(dto, user._id);
   }
 
-  
   @ApiOperation({ summary: 'Obter listagem de respostas do estudante' })
   @ApiResponse({
     status: 200,
@@ -52,7 +51,6 @@ export class AnswersQuestionsController {
     return this.answersQuestionsService.findAll(user._id);
   }
 
-  
   @ApiOperation({ summary: 'Obter resposta de um estudante para uma questão' })
   @ApiResponse({
     status: 200,

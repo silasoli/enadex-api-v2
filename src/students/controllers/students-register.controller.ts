@@ -54,7 +54,6 @@ export class StudentsRegisterController {
     return this.studentsRegisterService.approveRequest(params.id);
   }
 
-
   @ApiOperation({ summary: 'Cancelar solicitação de conta de um usuário' })
   @ApiResponse({
     status: 204,

@@ -60,5 +60,3 @@ export class CreateQuestionDto {
   @IsBoolean()
   active: boolean;
 }
-
-
