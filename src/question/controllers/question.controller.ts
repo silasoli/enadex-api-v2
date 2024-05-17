@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { QuestionService } from '../services/question.service';
 import { CreateQuestionDto } from '../dto/create-question.dto';
@@ -23,6 +24,7 @@ import { RoleGuard } from '../../roles/guards/role.guard';
 import { QuestionResponseDto } from '../dto/question-response.dto';
 import { ManagersRoleEnum } from '../../managers/schemas/manager.entity';
 import { Role } from '../../roles/decorators/roles.decorator';
+import { QuestionQueryDto } from '../dto/questions-query.dto';
 
 @ApiBearerAuth()
 @ApiTags('Questions')
@@ -47,10 +49,11 @@ export class QuestionController {
     type: QuestionResponseDto,
     description: 'Questions listing returned successfully',
   })
-  @Role([ManagersRoleEnum.COORDINATORS, ManagersRoleEnum.TEACHERS])
   @Get()
-  findAll(): Promise<QuestionResponseDto[]> {
-    return this.questionService.findAll();
+  async findAll(
+    @Query() dto: QuestionQueryDto,
+  ): Promise<QuestionResponseDto[]> {
+    return this.questionService.findAll(dto);
   }
 
   @ApiOperation({ summary: 'Find question by ID' })
@@ -58,7 +61,6 @@ export class QuestionController {
     type: QuestionResponseDto,
     description: 'Question returned successfully',
   })
-  @Role([ManagersRoleEnum.COORDINATORS, ManagersRoleEnum.TEACHERS])
   @Get(':id')
   findOne(@Param() params: IDQueryDTO): Promise<QuestionResponseDto> {
     return this.questionService.findOne(params.id);

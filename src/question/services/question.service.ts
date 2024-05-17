@@ -5,10 +5,11 @@ import {
   UpdateQuestionDto,
 } from '../dto/update-question.dto';
 import { Question, QuestionDocument } from '../schema/question.entity';
-import { Model } from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { QuestionResponseDto } from '../dto/question-response.dto';
 import { QUESTIONS_ERRORS } from '../constants/questions-errors';
+import { QuestionQueryDto } from '../dto/questions-query.dto';
 
 @Injectable()
 export class QuestionService {
@@ -37,9 +38,29 @@ export class QuestionService {
     return new QuestionResponseDto(created);
   }
 
-  public async findAll(): Promise<QuestionResponseDto[]> {
+  public async findAll(
+    searchParams: QuestionQueryDto,
+  ): Promise<QuestionResponseDto[]> {
+    const { course_id, searchText, isSpecific } = searchParams;
+
+    const filter: FilterQuery<Question> = { active: true };
+
+    if (course_id) {
+      filter.course_id = course_id;
+    }
+
+    if (searchText) {
+      filter.statements = {
+        $elemMatch: { description: { $regex: searchText, $options: 'i' } },
+      };
+    }
+
+    if (isSpecific !== undefined) {
+      filter.isSpecific = isSpecific === 'true' ? true : false;
+    }
+
     const data = await this.questionModel
-      .find()
+      .find(filter)
       .populate({ path: 'course_id' });
 
     return data.map((item) => new QuestionResponseDto(item));
