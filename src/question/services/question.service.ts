@@ -5,10 +5,11 @@ import {
   UpdateQuestionDto,
 } from '../dto/update-question.dto';
 import { Question, QuestionDocument } from '../schema/question.entity';
-import { Model } from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { QuestionResponseDto } from '../dto/question-response.dto';
 import { QUESTIONS_ERRORS } from '../constants/questions-errors';
+import { QuestionQueryDto } from '../dto/questions-query.dto';
 
 @Injectable()
 export class QuestionService {
@@ -16,10 +17,6 @@ export class QuestionService {
     @InjectModel(Question.name)
     private questionModel: Model<QuestionDocument>,
   ) {}
-
-  private validateSketch(active: boolean, sketch: boolean): void {
-    if (active && sketch) throw QUESTIONS_ERRORS.ACTIVE_SKETCH;
-  }
 
   private checkIfHaveCorrectOption(
     options: OptionPartDto[] | UpdateOptionPartDto[],
@@ -32,9 +29,7 @@ export class QuestionService {
   }
 
   public async create(dto: CreateQuestionDto): Promise<QuestionResponseDto> {
-    this.validateSketch(dto.active, dto.sketch);
-
-    if (dto.sketch) this.checkIfHaveCorrectOption(dto.options);
+    this.checkIfHaveCorrectOption(dto.options);
 
     if (!dto.isSpecific) dto.course_id = null;
 
@@ -43,9 +38,29 @@ export class QuestionService {
     return new QuestionResponseDto(created);
   }
 
-  public async findAll(): Promise<QuestionResponseDto[]> {
+  public async findAll(
+    searchParams: QuestionQueryDto,
+  ): Promise<QuestionResponseDto[]> {
+    const { course_id, searchText, isSpecific } = searchParams;
+
+    const filter: FilterQuery<Question> = { active: true };
+
+    if (course_id) {
+      filter.course_id = course_id;
+    }
+
+    if (searchText) {
+      filter.statements = {
+        $elemMatch: { description: { $regex: searchText, $options: 'i' } },
+      };
+    }
+
+    if (isSpecific !== undefined) {
+      filter.isSpecific = isSpecific === 'true' ? true : false;
+    }
+
     const data = await this.questionModel
-      .find()
+      .find(filter)
       .populate({ path: 'course_id' });
 
     return data.map((item) => new QuestionResponseDto(item));
@@ -131,13 +146,7 @@ export class QuestionService {
     _id: string,
     dto: UpdateQuestionDto,
   ): Promise<QuestionResponseDto> {
-    const entity = await this.findQuestionByID(_id);
-
-    if (dto?.active || dto?.sketch)
-      this.validateSketch(
-        dto.active ?? entity.active,
-        dto.sketch ?? entity.sketch,
-      );
+    await this.findQuestionByID(_id);
 
     if (dto?.options) {
       // dto.options = this.validateOptionsUpdate(entity.options, dto.options);

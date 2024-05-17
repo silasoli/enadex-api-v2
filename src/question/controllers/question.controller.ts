@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { QuestionService } from '../services/question.service';
 import { CreateQuestionDto } from '../dto/create-question.dto';
@@ -23,6 +24,7 @@ import { RoleGuard } from '../../roles/guards/role.guard';
 import { QuestionResponseDto } from '../dto/question-response.dto';
 import { ManagersRoleEnum } from '../../managers/schemas/manager.entity';
 import { Role } from '../../roles/decorators/roles.decorator';
+import { QuestionQueryDto } from '../dto/questions-query.dto';
 
 @ApiBearerAuth()
 @ApiTags('Questions')
@@ -36,7 +38,7 @@ export class QuestionController {
     type: QuestionResponseDto,
     description: 'Question create returned successfully',
   })
-  @Role([ManagersRoleEnum.COORDINATORS])
+  @Role([ManagersRoleEnum.COORDINATORS, ManagersRoleEnum.TEACHERS])
   @Post()
   create(@Body() dto: CreateQuestionDto) {
     return this.questionService.create(dto);
@@ -47,10 +49,11 @@ export class QuestionController {
     type: QuestionResponseDto,
     description: 'Questions listing returned successfully',
   })
-  @Role([ManagersRoleEnum.COORDINATORS])
   @Get()
-  findAll(): Promise<QuestionResponseDto[]> {
-    return this.questionService.findAll();
+  async findAll(
+    @Query() dto: QuestionQueryDto,
+  ): Promise<QuestionResponseDto[]> {
+    return this.questionService.findAll(dto);
   }
 
   @ApiOperation({ summary: 'Find question by ID' })
@@ -58,7 +61,6 @@ export class QuestionController {
     type: QuestionResponseDto,
     description: 'Question returned successfully',
   })
-  @Role([ManagersRoleEnum.COORDINATORS])
   @Get(':id')
   findOne(@Param() params: IDQueryDTO): Promise<QuestionResponseDto> {
     return this.questionService.findOne(params.id);
@@ -69,7 +71,7 @@ export class QuestionController {
     type: QuestionResponseDto,
     description: 'Question update returned successfully',
   })
-  @Role([ManagersRoleEnum.COORDINATORS])
+  @Role([ManagersRoleEnum.COORDINATORS, ManagersRoleEnum.TEACHERS])
   @Patch(':id')
   update(
     @Param() params: IDQueryDTO,

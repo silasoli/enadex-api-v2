@@ -50,9 +50,6 @@ export class Question {
   @Prop({ required: true, default: true })
   active: boolean;
 
-  @Prop({ required: true, default: false })
-  sketch: boolean;
-
   createdAt: Date;
 
   updatedAt: Date;

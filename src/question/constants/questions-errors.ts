@@ -8,16 +8,12 @@ export const QUESTIONS_ERRORS = {
     id: 'QUESTIONS-001',
     message: 'Questão não encontrada.',
   }),
-  ACTIVE_SKETCH: new UnprocessableEntityException({
-    id: 'QUESTIONS-002',
-    message: 'Não é permitido salvar um rascunho ativo.',
-  }),
   HAVE_CORRECT_OPTION: new UnprocessableEntityException({
-    id: 'QUESTIONS-003',
+    id: 'QUESTIONS-002',
     message: 'Não é permitido salvar uma questão sem alternativa correta.',
   }),
   MULTIPLE_CORRECT_OPTION: new UnprocessableEntityException({
-    id: 'QUESTIONS-004',
+    id: 'QUESTIONS-003',
     message:
       'Não é permitido salvar uma questão com varias alternativas corretas.',
   }),
