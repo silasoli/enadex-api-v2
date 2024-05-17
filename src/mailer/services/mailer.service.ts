@@ -26,8 +26,8 @@ export class MailerService {
         pass: config.get('MAIL_PASSWORD'),
       },
       tls: {
-        rejectUnauthorized: false
-      }
+        rejectUnauthorized: false,
+      },
     });
   }
 
