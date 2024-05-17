@@ -12,7 +12,6 @@ export class QuestionQueryDto {
   @ApiProperty({
     required: false,
     description: 'ID do curso para filtrar as questões.',
-    example: '609e129e9b7d6f7a1c8b4567',
   })
   @IsOptional()
   @IsMongoId({ message: 'O ID do curso deve ser válido.' })
@@ -21,7 +20,6 @@ export class QuestionQueryDto {
   @ApiProperty({
     required: false,
     description: 'Texto para busca nos enunciados das questões.',
-    example: 'some text',
   })
   @IsOptional()
   @IsString({ message: 'O texto de busca deve ser uma string.' })
