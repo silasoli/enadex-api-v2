@@ -11,7 +11,7 @@ export class CreateMockExamDto {
   @IsMongoId({ message: 'O Curso deve ser valido. ' })
   course_id: string;
 
-  @ApiProperty({ required: true, description: 'Duration in seconds'})
+  @ApiProperty({ required: true, description: 'Duration in seconds' })
   @IsNumber({}, { message: 'A duração deve ser em segundos' })
   duration: number;
 }

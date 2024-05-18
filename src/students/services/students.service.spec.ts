@@ -8,7 +8,6 @@ import { ManagersService } from '../../managers/services/managers.service';
 import { CreateStudentDto } from '../dto/create-student.dto';
 import { Manager } from 'src/managers/schemas/manager.entity';
 import { UpdateStudentDto } from '../dto/update-student.dto';
-import { populate } from 'dotenv';
 
 const studentId = faker.database.mongodbObjectId();
 const studentEmail = faker.internet.email();

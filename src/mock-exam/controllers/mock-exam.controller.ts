@@ -71,7 +71,7 @@ export class MockExamController {
   public findOne(@Param() params: IDQueryDTO): Promise<MockExamResponseDto> {
     return this.mockExamService.findOne(params.id);
   }
-  
+
   @ApiOperation({ summary: 'Editar simulado' })
   @ApiResponse({
     status: 200,
