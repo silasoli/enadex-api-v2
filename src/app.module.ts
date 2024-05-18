@@ -13,6 +13,7 @@ import { HealthCheckModule } from './health-check/health-check.module';
 import { QuestionModule } from './question/question.module';
 import { CoursesModule } from './courses/courses.module';
 import { AnswersQuestionsModule } from './answers-questions/answers-questions.module';
+import { MockExamModule } from './mock-exam/mock-exam.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { AnswersQuestionsModule } from './answers-questions/answers-questions.mo
     QuestionModule,
     CoursesModule,
     AnswersQuestionsModule,
+    MockExamModule,
   ],
   controllers: [AppController],
 })
