@@ -51,7 +51,7 @@ export class StudentsController {
   @ApiResponse({
     status: 200,
     description: 'Listagem de contas dos usuários retornada com sucesso',
-    type: StudentResponseDto,
+    type: [StudentResponseDto],
   })
   @Role([ManagersRoleEnum.COORDINATORS, ManagersRoleEnum.TEACHERS])
   @Get()
