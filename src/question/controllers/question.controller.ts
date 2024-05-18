@@ -35,6 +35,7 @@ export class QuestionController {
 
   @ApiOperation({ summary: 'Create a question' })
   @ApiCreatedResponse({
+    status: 201,
     type: QuestionResponseDto,
     description: 'Question create returned successfully',
   })

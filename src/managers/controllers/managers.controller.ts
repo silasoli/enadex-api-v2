@@ -34,7 +34,7 @@ export class ManagersController {
 
   @ApiOperation({ summary: 'Criar conta de usuário' })
   @ApiResponse({
-    status: 200,
+    status: 201,
     description: 'Conta de usuário criada com sucesso',
     type: ManagerResponseDto,
   })

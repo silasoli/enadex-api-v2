@@ -24,7 +24,7 @@ export class CoursesController {
 
   @ApiOperation({ summary: 'Criar curso' })
   @ApiResponse({
-    status: 200,
+    status: 201,
     description: 'Curso criado com sucesso',
     type: CourseResponseDto,
   })
