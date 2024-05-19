@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { MockExam } from '../schemas/mock-exam.entity';
-import { CourseResponseDto } from '../../question/dto/question-response.dto';
+import { MockExam } from '../../schemas/mock-exam.entity';
+import { CourseResponseDto } from '../../../question/dto/question-response.dto';
 
 export class MockExamResponseDto {
   constructor(mockExam: MockExam) {
