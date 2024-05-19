@@ -20,7 +20,6 @@ import { MockExamModule } from './mock-exam/mock-exam.module';
     ConfigModule.forRoot({ isGlobal: true }),
     MongooseModule.forRoot(process.env.MONGO_URI),
     ManagersModule,
-    StudentsModule,
     AuthModule,
     RolesModule,
     MailerModule,
@@ -31,6 +30,7 @@ import { MockExamModule } from './mock-exam/mock-exam.module';
     CoursesModule,
     AnswersQuestionsModule,
     MockExamModule,
+    StudentsModule,
   ],
   controllers: [AppController],
 })

@@ -10,12 +10,19 @@ import { InjectModel } from '@nestjs/mongoose';
 import { QuestionResponseDto } from '../dto/question-response.dto';
 import { QUESTIONS_ERRORS } from '../constants/questions-errors';
 import { QuestionQueryDto } from '../dto/questions-query.dto';
+import {
+  AnswerQuestions,
+  AnswerQuestionsDocument,
+} from '../../answers-questions/schemas/answers-question.entity';
 
 @Injectable()
 export class QuestionService {
   constructor(
     @InjectModel(Question.name)
     private questionModel: Model<QuestionDocument>,
+
+    @InjectModel(AnswerQuestions.name)
+    private answerModel: Model<AnswerQuestionsDocument>,
   ) {}
 
   private checkIfHaveCorrectOption(
@@ -158,5 +165,11 @@ export class QuestionService {
     await this.questionModel.updateOne({ _id }, dto);
 
     return this.findOne(_id);
+  }
+
+  public async removeQuestionAnswers(_id: string): Promise<void> {
+    await this.findQuestionByID(_id);
+    await this.questionModel.deleteOne({ _id })
+    await this.answerModel.deleteMany({ question_id: _id });
   }
 }

@@ -15,8 +15,8 @@ import { AnswersQuestionsResponseDto } from '../dto/answers-questions-response.d
 import { IDQueryDTO } from '../../common/dto/id-query.dto';
 
 @ApiBearerAuth()
-@ApiTags('Answers Questions')
-@Controller('answers-questions')
+@ApiTags('Me Answers Questions')
+@Controller('me/answers-questions')
 @UseGuards(AuthUserJwtGuard)
 export class AnswersQuestionsController {
   constructor(

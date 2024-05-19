@@ -54,6 +54,7 @@ export class AnswersQuestionsService {
 
     const created = await this.answerModel.create({
       ...dto,
+      student_id,
       right_answer,
     });
 
@@ -68,7 +69,10 @@ export class AnswersQuestionsService {
     return data.map((item) => new AnswersQuestionsResponseDto(item));
   }
 
-  public async findById(_id: string, student_id: string): Promise<any> {
+  public async findById(
+    _id: string,
+    student_id: string,
+  ): Promise<AnswersQuestionsResponseDto> {
     const answer = await this.answerModel.findOne({ _id, student_id });
 
     if (!answer) ANSWERS_QUESTIONS_ERRORS.NOT_FOUND;
@@ -79,7 +83,7 @@ export class AnswersQuestionsService {
   public async findByQuestion(
     question_id: string,
     student_id: string,
-  ): Promise<any> {
+  ): Promise<AnswersQuestionsResponseDto> {
     const answer = await this.answerModel.findOne({
       question_id,
       student_id,

@@ -4,8 +4,10 @@ import {
   Post,
   Body,
   Patch,
+  HttpCode,
   Param,
   UseGuards,
+  Delete,
   Query,
 } from '@nestjs/common';
 import { QuestionService } from '../services/question.service';
@@ -17,6 +19,7 @@ import {
   ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 import { AuthUserJwtGuard } from '../../auth/guards/auth-user-jwt.guard';
@@ -79,5 +82,17 @@ export class QuestionController {
     @Body() dto: UpdateQuestionDto,
   ): Promise<QuestionResponseDto> {
     return this.questionService.update(params.id, dto);
+  }
+
+  @ApiOperation({ summary: 'Delete  Question' })
+  @ApiResponse({
+    status: 204,
+    description: 'Question deleted with sucesso',
+  })
+  @HttpCode(204)
+  @Delete(':id')
+  @Role([ManagersRoleEnum.COORDINATORS, ManagersRoleEnum.TEACHERS])
+  public remove(@Param() params: IDQueryDTO): Promise<void> {
+    return this.questionService.removeQuestionAnswers(params.id);
   }
 }
