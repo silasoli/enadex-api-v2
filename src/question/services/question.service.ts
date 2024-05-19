@@ -169,7 +169,7 @@ export class QuestionService {
 
   public async removeQuestionAnswers(_id: string): Promise<void> {
     await this.findQuestionByID(_id);
-    await this.questionModel.deleteOne({ _id })
+    await this.questionModel.deleteOne({ _id });
     await this.answerModel.deleteMany({ question_id: _id });
   }
 }
