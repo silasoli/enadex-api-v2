@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { CreateMockExamDto } from '../dto/create-mock-exam.dto';
-import { UpdateMockExamDto } from '../dto/update-mock-exam.dto';
+import { CreateMockExamDto } from '../dto/mock-exam/create-mock-exam.dto';
+import { UpdateMockExamDto } from '../dto/mock-exam/update-mock-exam.dto';
 import { MockExam, MockExamDocument } from '../schemas/mock-exam.entity';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { MOCK_EXAM_ERRORS } from '../constants/questions-errors';
-import { MockExamResponseDto } from '../dto/mock-exam-response.dto';
+import { MOCK_EXAM_ERRORS } from '../constants/mock-exam-errors';
+import { MockExamResponseDto } from '../dto/mock-exam/mock-exam-response.dto';
 
 @Injectable()
 export class MockExamService {

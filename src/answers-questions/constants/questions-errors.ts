@@ -7,6 +7,6 @@ export const ANSWERS_QUESTIONS_ERRORS = {
   }),
   ANSWER_ALREADY_EXISTS: new ConflictException({
     id: 'ANSWER-QUESTIONS-002',
-    message: 'Questão já respondida já existe',
+    message: 'Questão já respondida.',
   }),
 };
