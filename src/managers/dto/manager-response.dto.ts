@@ -1,11 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Manager } from '../schemas/manager.entity';
+import { CourseResponseDto } from '../../question/dto/question-response.dto';
 
 export class ManagerResponseDto {
   constructor(manager: Manager) {
-    const { _id, name, email, role, active } = manager;
+    const { _id, name, email, courses_id, role, active } = manager;
 
-    return { _id: String(_id), name, email, role, active };
+    return { _id: String(_id), name, email, courses_id, role, active };
   }
 
   @ApiProperty({ required: true })
@@ -16,6 +17,9 @@ export class ManagerResponseDto {
 
   @ApiProperty({ required: true })
   email: string;
+
+  @ApiProperty({ required: true })
+  courses_id: CourseResponseDto[];
 
   @ApiProperty({ required: true })
   role: string;

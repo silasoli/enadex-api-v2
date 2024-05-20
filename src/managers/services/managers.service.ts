@@ -59,13 +59,17 @@ export class ManagersService {
   }
 
   public async findAll(): Promise<ManagerResponseDto[]> {
-    const managers = await this.managerModel.find();
+    const managers = await this.managerModel
+      .find()
+      .populate({ path: 'courses_id', select: ['_id', 'name'] });
 
     return managers.map((manager) => new ManagerResponseDto(manager));
   }
 
   private async findManagerByID(_id: string): Promise<Manager> {
-    const manager = await this.managerModel.findById(_id);
+    const manager = await this.managerModel
+      .findById(_id)
+      .populate({ path: 'courses_id', select: ['_id', 'name'] });
 
     if (!manager) throw MANAGERS_ERRORS.NOT_FOUND;
 
