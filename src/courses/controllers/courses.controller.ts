@@ -18,7 +18,6 @@ import { RoleGuard } from '../../roles/guards/role.guard';
 @ApiBearerAuth()
 @ApiTags('Courses')
 @Controller('courses')
-@UseGuards(AuthUserJwtGuard, RoleGuard)
 export class CoursesController {
   constructor(private readonly coursesService: CoursesService) {}
 
@@ -29,6 +28,7 @@ export class CoursesController {
     type: CourseResponseDto,
   })
   @ApiBody({ type: CreateCourseDto })
+  @UseGuards(AuthUserJwtGuard, RoleGuard)
   @Role([ManagersRoleEnum.COORDINATORS])
   @Post()
   create(@Body() dto: CreateCourseDto): Promise<CourseResponseDto> {
@@ -52,6 +52,7 @@ export class CoursesController {
     description: 'Curso retornado com sucesso',
     type: CourseResponseDto,
   })
+  @UseGuards(AuthUserJwtGuard, RoleGuard)
   @Role([ManagersRoleEnum.COORDINATORS])
   @Get(':id')
   findOne(@Param() params: IDQueryDTO): Promise<CourseResponseDto> {
