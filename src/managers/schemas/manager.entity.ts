@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
+import { Course } from '../../courses/schema/course.entity';
 
 export enum ManagersRoleEnum {
   TEACHERS = 'TEACHERS',
@@ -17,6 +18,13 @@ export class Manager {
 
   @Prop({ required: true, unique: true, lowercase: true })
   email: string;
+
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Course',
+    required: true,
+  })
+  courses_id: Course[];
 
   @Prop({ required: true, select: false })
   password: string;
