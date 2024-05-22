@@ -16,10 +16,10 @@ export class ManagerStrategy implements ProfileStrategy {
     _id: string,
     dto: UpdateManagerDto,
   ): Promise<ManagerResponseDto> {
-    return this.managersService.update(_id, dto);
+    return this.managersService.update(_id, _id, dto);
   }
 
   public async disableOneProfile(_id: string): Promise<void> {
-    return this.managersService.activeOrDeactive(_id, false);
+    return this.managersService.activeOrDeactive(_id, _id, false);
   }
 }
