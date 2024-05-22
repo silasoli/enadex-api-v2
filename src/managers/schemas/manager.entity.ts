@@ -20,7 +20,7 @@ export class Manager {
   email: string;
 
   @Prop({
-    type: mongoose.Schema.Types.ObjectId,
+    type: [mongoose.Schema.Types.ObjectId],
     ref: 'Course',
     required: true,
   })
