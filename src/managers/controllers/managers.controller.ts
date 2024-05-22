@@ -24,6 +24,8 @@ import { AuthUserJwtGuard } from '../../auth/guards/auth-user-jwt.guard';
 import { Role } from '../../roles/decorators/roles.decorator';
 import { ManagersRoleEnum } from '../schemas/manager.entity';
 import { RoleGuard } from '../../roles/guards/role.guard';
+import { UserRequest } from '../../auth/decorators/user-request.decorator';
+import { UserRequestDTO } from '../../common/dto/user-request.dto';
 
 @ApiBearerAuth()
 @ApiTags('Managers')
@@ -82,9 +84,10 @@ export class ManagersController {
   @Patch(':id')
   update(
     @Param() params: IDQueryDTO,
+    @UserRequest() user: UserRequestDTO,
     @Body() updateManagerDto: UpdateManagerDto,
   ): Promise<ManagerResponseDto> {
-    return this.managersService.update(params.id, updateManagerDto);
+    return this.managersService.update(params.id, user._id, updateManagerDto);
   }
 
   @ApiOperation({ summary: 'Ativar conta de um usuário' })
@@ -95,8 +98,11 @@ export class ManagersController {
   @HttpCode(204)
   @Role([ManagersRoleEnum.COORDINATORS])
   @Post(':id/activate')
-  activateManager(@Param() params: IDQueryDTO): Promise<void> {
-    return this.managersService.activeOrDeactive(params.id, true);
+  activateManager(
+    @UserRequest() user: UserRequestDTO,
+    @Param() params: IDQueryDTO,
+  ): Promise<void> {
+    return this.managersService.activeOrDeactive(params.id, user._id, true);
   }
 
   @ApiOperation({ summary: 'Desativar conta de um usuário' })
@@ -107,7 +113,10 @@ export class ManagersController {
   @HttpCode(204)
   @Role([ManagersRoleEnum.COORDINATORS])
   @Post(':id/deactivate')
-  deactivateManager(@Param() params: IDQueryDTO): Promise<void> {
-    return this.managersService.activeOrDeactive(params.id, false);
+  deactivateManager(
+    @UserRequest() user: UserRequestDTO,
+    @Param() params: IDQueryDTO,
+  ): Promise<void> {
+    return this.managersService.activeOrDeactive(params.id, user._id, false);
   }
 }

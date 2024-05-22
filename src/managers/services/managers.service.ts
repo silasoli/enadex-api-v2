@@ -24,7 +24,10 @@ export class ManagersService {
 
   private async validateCoordinatorEditingTeacher(
     teacherId: string,
+    logged_id: string,
   ): Promise<void> {
+    if (teacherId === logged_id) return;
+
     const manager = await this.findManagerByID(teacherId);
 
     if (manager.role === ManagersRoleEnum.COORDINATORS)
@@ -84,11 +87,12 @@ export class ManagersService {
 
   public async update(
     _id: string,
+    logged_id: string,
     dto: UpdateManagerDto,
   ): Promise<ManagerResponseDto> {
     await this.findManagerByID(_id);
 
-    await this.validateCoordinatorEditingTeacher(_id);
+    await this.validateCoordinatorEditingTeacher(_id, logged_id);
 
     if (dto.email) await this.validatingStudentsEmail(dto.email);
 
@@ -109,10 +113,14 @@ export class ManagersService {
     await this.managerModel.updateOne({ _id }, rawData);
   }
 
-  public async activeOrDeactive(_id: string, active: boolean): Promise<void> {
+  public async activeOrDeactive(
+    _id: string,
+    logged_id: string,
+    active: boolean,
+  ): Promise<void> {
     await this.findManagerByID(_id);
 
-    await this.validateCoordinatorEditingTeacher(_id);
+    await this.validateCoordinatorEditingTeacher(_id, logged_id);
 
     await this.managerModel.updateOne({ _id }, { active });
   }

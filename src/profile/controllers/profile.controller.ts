@@ -3,9 +3,9 @@ import {
   Get,
   Body,
   Patch,
-  Delete,
+  // Delete,
   UseGuards,
-  HttpCode,
+  // HttpCode,
 } from '@nestjs/common';
 import { ProfileService } from '../services/profile.service';
 import { UpdateProfileDto } from '../dto/update-profile.dto';
@@ -72,14 +72,14 @@ export class ProfileController {
     return this.profileService.updateOneProfile(user._id, updateProfileDto);
   }
 
-  @ApiOperation({ summary: 'Desativar perfil/conta do usuário logado' })
-  @ApiResponse({
-    status: 204,
-    description: 'Conta/perfil do usuário logado desativado com sucesso',
-  })
-  @HttpCode(204)
-  @Delete('me')
-  public disableOneProfile(@UserRequest() user: UserRequestDTO): Promise<void> {
-    return this.profileService.disableOneProfile(user._id);
-  }
+  // @ApiOperation({ summary: 'Desativar perfil/conta do usuário logado' })
+  // @ApiResponse({
+  //   status: 204,
+  //   description: 'Conta/perfil do usuário logado desativado com sucesso',
+  // })
+  // @HttpCode(204)
+  // @Delete('me')
+  // public disableOneProfile(@UserRequest() user: UserRequestDTO): Promise<void> {
+  //   return this.profileService.disableOneProfile(user._id);
+  // }
 }

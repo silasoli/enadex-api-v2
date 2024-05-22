@@ -5,6 +5,7 @@ import { Course } from '../../courses/schema/course.entity';
 export enum ManagersRoleEnum {
   TEACHERS = 'TEACHERS',
   COORDINATORS = 'COORDINATORS',
+  ADMINISTRATOR = 'ADMINISTRATOR',
 }
 
 export type ManagerDocument = Manager & Document;
