@@ -82,8 +82,8 @@ export class ForgotPasswordService {
         emailAddress: user.email,
         title: 'Código de recuperação de senha',
       },
-      { email: user.email, name: user.name, otgCode },
-      'recover-password',
+      { name: user.name, otgCode },
+      'password-recovery',
     );
   }
 
@@ -157,14 +157,13 @@ export class ForgotPasswordService {
     await this.mailerService.sendEmailWithTemplate(
       {
         emailAddress: user.email,
-        title: 'Senha alterada com sucesso',
+        title: 'Senha modificada com sucesso',
       },
       {
-        email: user.email,
         name: user.name,
         date: new Date().toLocaleDateString('pt-BR'),
       },
-      'changed-password',
+      'password-recovery-sucess',
     );
   }
 }
