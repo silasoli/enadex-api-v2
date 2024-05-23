@@ -9,9 +9,9 @@ import {
   Delete,
   UseGuards,
 } from '@nestjs/common';
-import { MockExamService } from '../services/mock-exam.service';
-import { CreateMockExamDto } from '../dto/mock-exam/create-mock-exam.dto';
-import { UpdateMockExamDto } from '../dto/mock-exam/update-mock-exam.dto';
+import { MockExamService } from '../../services/mock-exam/mock-exam.service';
+import { CreateMockExamDto } from '../../dto/mock-exam/create-mock-exam.dto';
+import { UpdateMockExamDto } from '../../dto/mock-exam/update-mock-exam.dto';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -19,12 +19,12 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { AuthUserJwtGuard } from '../../auth/guards/auth-user-jwt.guard';
-import { RoleGuard } from '../../roles/guards/role.guard';
-import { IDQueryDTO } from '../../common/dto/id-query.dto';
-import { Role } from '../../roles/decorators/roles.decorator';
-import { ManagersRoleEnum } from '../../managers/schemas/manager.entity';
-import { MockExamResponseDto } from '../dto/mock-exam/mock-exam-response.dto';
+import { AuthUserJwtGuard } from '../../../auth/guards/auth-user-jwt.guard';
+import { RoleGuard } from '../../../roles/guards/role.guard';
+import { IDQueryDTO } from '../../../common/dto/id-query.dto';
+import { Role } from '../../../roles/decorators/roles.decorator';
+import { ManagersRoleEnum } from '../../../managers/schemas/manager.entity';
+import { MockExamResponseDto } from '../../dto/mock-exam/mock-exam-response.dto';
 
 @ApiBearerAuth()
 @ApiTags('Mock Exams')

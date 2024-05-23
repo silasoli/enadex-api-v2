@@ -6,17 +6,17 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { AuthUserJwtGuard } from '../../auth/guards/auth-user-jwt.guard';
-import { IDQueryDTO } from '../../common/dto/id-query.dto';
-import { StudentsMockExamService } from '../services/students-mock-exam.service';
-import { CreateStudentMockExamDto } from '../dto/students-mock-exam/create-student-mock-exam.dto';
-import { UserRequest } from '../../auth/decorators/user-request.decorator';
-import { UserRequestDTO } from '../../common/dto/user-request.dto';
-import { StudentMockExamResponseDto } from '../dto/students-mock-exam/mock-exam-response.dto';
+import { AuthUserJwtGuard } from '../../../auth/guards/auth-user-jwt.guard';
+import { IDQueryDTO } from '../../../common/dto/id-query.dto';
+import { StudentsMockExamService } from '../../services/students-mock-exam/students-mock-exam.service';
+import { CreateStudentMockExamDto } from '../../dto/students-mock-exam/create-student-mock-exam.dto';
+import { UserRequest } from '../../../auth/decorators/user-request.decorator';
+import { UserRequestDTO } from '../../../common/dto/user-request.dto';
+import { StudentMockExamResponseDto } from '../../dto/students-mock-exam/mock-exam-response.dto';
 
 @ApiBearerAuth()
 @ApiTags('Me Mock Exams')
-@Controller('me/exams')
+@Controller('/exams/me')
 @UseGuards(AuthUserJwtGuard)
 export class StudentsMockExamController {
   constructor(private readonly service: StudentsMockExamService) {}

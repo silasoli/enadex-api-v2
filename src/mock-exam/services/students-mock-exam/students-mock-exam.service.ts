@@ -2,13 +2,13 @@ import { Injectable } from '@nestjs/common';
 import {
   StudentsMockExam,
   StudentsMockExamDocument,
-} from '../schemas/students-mock-exam.entity';
+} from '../../schemas/students-mock-exam.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CreateStudentMockExamDto } from '../dto/students-mock-exam/create-student-mock-exam.dto';
-import { MockExamService } from './mock-exam.service';
-import { STUDENTS_MOCK_EXAM_ERRORS } from '../constants/students-exam-errors';
-import { StudentMockExamResponseDto } from '../dto/students-mock-exam/mock-exam-response.dto';
+import { CreateStudentMockExamDto } from '../../dto/students-mock-exam/create-student-mock-exam.dto';
+import { MockExamService } from '../mock-exam/mock-exam.service';
+import { StudentMockExamResponseDto } from '../../dto/students-mock-exam/mock-exam-response.dto';
+import { STUDENTS_MOCK_EXAM_ERRORS } from '../../constants/students-exam-errors';
 
 @Injectable()
 export class StudentsMockExamService {
