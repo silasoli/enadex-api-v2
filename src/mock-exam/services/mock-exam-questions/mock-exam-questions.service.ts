@@ -16,13 +16,20 @@ import {
 } from '../../dto/mock-exam-questions/update-mock-exam-question.dto';
 import { MockExamQuestionResponseDto } from '../../dto/mock-exam-questions/mock-exam-question-response.dto';
 import { MockExamQuestionQueryDto } from '../../dto/mock-exam-questions/mock-exam-questions-query.dto';
+import { MockExamService } from '../mock-exam/mock-exam.service';
 
 @Injectable()
 export class MockExamQuestionsService {
   constructor(
     @InjectModel(MockExamQuestion.name)
     private mockExamQuestionsModel: Model<MockExamQuestionDocument>,
+    private readonly mockExamService: MockExamService,
+
   ) {}
+
+  private async verifyMockExamExits(mock_exam_id: string): Promise<void> {
+    await this.mockExamService.findMockExamByID(mock_exam_id);
+  }
 
   private checkIfHaveCorrectOption(
     options: OptionPartDto[] | UpdateOptionPartDto[],
@@ -35,8 +42,11 @@ export class MockExamQuestionsService {
   }
 
   public async create(
+    mock_exam_id: string,
     dto: CreateMockExamQuestionDto,
   ): Promise<MockExamQuestionResponseDto> {
+    await this.verifyMockExamExits(mock_exam_id);
+
     this.checkIfHaveCorrectOption(dto.options);
 
     const created = await this.mockExamQuestionsModel.create(dto);
@@ -45,11 +55,14 @@ export class MockExamQuestionsService {
   }
 
   public async findAll(
+    mock_exam_id: string,
     searchParams: MockExamQuestionQueryDto,
   ): Promise<MockExamQuestionResponseDto[]> {
     const { searchText } = searchParams;
 
-    const filter: FilterQuery<MockExamQuestion> = { active: true };
+    await this.verifyMockExamExits(mock_exam_id);
+
+    const filter: FilterQuery<MockExamQuestion> = { mock_exam_id };
 
     if (searchText) {
       filter.statements = {
