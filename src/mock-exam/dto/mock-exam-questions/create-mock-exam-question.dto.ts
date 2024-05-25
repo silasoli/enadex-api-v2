@@ -41,9 +41,4 @@ export class CreateMockExamQuestionDto {
   @ValidateNested()
   @Type(() => OptionPartDto)
   options: OptionPartDto[];
-
-  @ApiProperty({ required: true })
-  @IsNotEmpty()
-  @IsMongoId()
-  mock_exam_id: string;
 }

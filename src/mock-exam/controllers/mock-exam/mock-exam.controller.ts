@@ -6,7 +6,6 @@ import {
   Patch,
   Param,
   HttpCode,
-  Delete,
   UseGuards,
 } from '@nestjs/common';
 import { MockExamService } from '../../services/mock-exam/mock-exam.service';
@@ -88,15 +87,37 @@ export class MockExamController {
     return this.mockExamService.update(params.id, dto);
   }
 
-  @ApiOperation({ summary: 'Excluir simulado' })
+  @ApiOperation({ summary: 'Disponibilizar simulado' })
   @ApiResponse({
     status: 204,
-    description: 'Simulado excluido com sucesso',
   })
   @HttpCode(204)
-  @Delete(':id')
+  @Patch(':id/available')
   @Role([ManagersRoleEnum.COORDINATORS, ManagersRoleEnum.TEACHERS])
-  public remove(@Param() params: IDQueryDTO): Promise<void> {
-    return this.mockExamService.remove(params.id);
+  public makeAvailable(@Param() params: IDQueryDTO): Promise<void> {
+    return this.mockExamService.makeAvailable(params.id);
   }
+
+  @ApiOperation({ summary: 'Finalizar simulado' })
+  @ApiResponse({
+    status: 204,
+  })
+  @HttpCode(204)
+  @Patch(':id/finish')
+  @Role([ManagersRoleEnum.COORDINATORS, ManagersRoleEnum.TEACHERS])
+  public finishMockExam(@Param() params: IDQueryDTO): Promise<void> {
+    return this.mockExamService.finishMockExam(params.id);
+  }
+
+  // @ApiOperation({ summary: 'Excluir simulado' })
+  // @ApiResponse({
+  //   status: 204,
+  //   description: 'Simulado excluido com sucesso',
+  // })
+  // @HttpCode(204)
+  // @Delete(':id')
+  // @Role([ManagersRoleEnum.COORDINATORS, ManagersRoleEnum.TEACHERS])
+  // public remove(@Param() params: IDQueryDTO): Promise<void> {
+  //   return this.mockExamService.remove(params.id);
+  // }
 }

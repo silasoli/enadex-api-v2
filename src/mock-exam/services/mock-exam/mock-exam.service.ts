@@ -14,6 +14,13 @@ export class MockExamService {
     private mockExamModel: Model<MockExamDocument>,
   ) {}
 
+  private async checkIfCanChange(mockExam: MockExam): Promise<void> {
+    if (mockExam.finished || mockExam.finishedAt)
+      throw MOCK_EXAM_ERRORS.FINISHED_MOCK_EXAM;
+
+    if (mockExam.available) throw MOCK_EXAM_ERRORS.AVAILABLE_MOCK_EXAM;
+  }
+
   public async create(dto: CreateMockExamDto): Promise<MockExamResponseDto> {
     const created = await this.mockExamModel.create({ ...dto });
 
@@ -48,11 +55,33 @@ export class MockExamService {
     _id: string,
     dto: UpdateMockExamDto,
   ): Promise<MockExamResponseDto> {
-    await this.findMockExamByID(_id);
+    const mockExam = await this.findMockExamByID(_id);
+
+    await this.checkIfCanChange(mockExam);
 
     await this.mockExamModel.updateOne({ _id }, dto);
 
     return this.findOne(_id);
+  }
+
+  public async makeAvailable(_id: string): Promise<void> {
+    const mockExam = await this.findMockExamByID(_id);
+
+    if (mockExam.available) throw MOCK_EXAM_ERRORS.IS_AVAILABLE;
+
+    await this.mockExamModel.updateOne({ _id }, { available: true });
+  }
+
+  public async finishMockExam(_id: string): Promise<void> {
+    const mockExam = await this.findMockExamByID(_id);
+
+    if (mockExam.finished || mockExam.finishedAt)
+      throw MOCK_EXAM_ERRORS.IS_FINISHED;
+
+    await this.mockExamModel.updateOne(
+      { _id },
+      { finished: true, updatedAt: new Date() },
+    );
   }
 
   public async remove(_id: string): Promise<void> {

@@ -17,4 +17,12 @@ export const MOCK_EXAM_QUESTIONS_ERRORS = {
     message:
       'Não é permitido salvar uma questão com varias alternativas corretas.',
   }),
+  AVAILABLE_MOCK_EXAM: new UnprocessableEntityException({
+    id: 'MOCK-EXAM-QUESTIONS-004',
+    message: 'Não é permitido modificar um simulado em andamento.',
+  }),
+  FINISHED_MOCK_EXAM: new UnprocessableEntityException({
+    id: 'MOCK-EXAM-QUESTIONS-005',
+    message: 'Não é permitido modificar um simulado finalizado.',
+  }),
 };

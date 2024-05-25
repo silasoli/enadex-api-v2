@@ -17,6 +17,7 @@ import {
 import { MockExamQuestionResponseDto } from '../../dto/mock-exam-questions/mock-exam-question-response.dto';
 import { MockExamQuestionQueryDto } from '../../dto/mock-exam-questions/mock-exam-questions-query.dto';
 import { MockExamService } from '../mock-exam/mock-exam.service';
+import { MockExam } from '../../schemas/mock-exam.entity';
 
 @Injectable()
 export class MockExamQuestionsService {
@@ -24,11 +25,20 @@ export class MockExamQuestionsService {
     @InjectModel(MockExamQuestion.name)
     private mockExamQuestionsModel: Model<MockExamQuestionDocument>,
     private readonly mockExamService: MockExamService,
-
   ) {}
 
-  private async verifyMockExamExits(mock_exam_id: string): Promise<void> {
-    await this.mockExamService.findMockExamByID(mock_exam_id);
+  private async verifyMockExamExits(mock_exam_id: string): Promise<MockExam> {
+    return this.mockExamService.findMockExamByID(mock_exam_id);
+  }
+
+  private async checkIfCanChange(mock_exam_id: string): Promise<void> {
+    const mockExam = await this.verifyMockExamExits(mock_exam_id);
+
+    if (mockExam.finished || mockExam.finishedAt)
+      throw MOCK_EXAM_QUESTIONS_ERRORS.FINISHED_MOCK_EXAM;
+
+    if (mockExam.available)
+      throw MOCK_EXAM_QUESTIONS_ERRORS.AVAILABLE_MOCK_EXAM;
   }
 
   private checkIfHaveCorrectOption(
@@ -45,11 +55,14 @@ export class MockExamQuestionsService {
     mock_exam_id: string,
     dto: CreateMockExamQuestionDto,
   ): Promise<MockExamQuestionResponseDto> {
-    await this.verifyMockExamExits(mock_exam_id);
+    await this.checkIfCanChange(mock_exam_id);
 
     this.checkIfHaveCorrectOption(dto.options);
 
-    const created = await this.mockExamQuestionsModel.create(dto);
+    const created = await this.mockExamQuestionsModel.create({
+      ...dto,
+      mock_exam_id,
+    });
 
     return new MockExamQuestionResponseDto(created);
   }
@@ -70,34 +83,44 @@ export class MockExamQuestionsService {
       };
     }
 
-    const data = await this.mockExamQuestionsModel
-      .find(filter)
-      .populate({ path: 'course_id' });
+    const data = await this.mockExamQuestionsModel.find(filter);
 
     return data.map((item) => new MockExamQuestionResponseDto(item));
   }
 
-  public async findQuestionByID(_id: string): Promise<any> {
-    const question = await this.mockExamQuestionsModel
-      .findById(_id)
-      .populate({ path: 'course_id' });
+  public async findQuestionByID(
+    _id: string,
+    mock_exam_id: string,
+  ): Promise<MockExamQuestion> {
+    await this.verifyMockExamExits(mock_exam_id);
 
-    if (!question) throw MOCK_EXAM_QUESTIONS_ERRORS.NOT_FOUND;
+    const mockExamQuestion = await this.mockExamQuestionsModel.findOne({
+      _id,
+      mock_exam_id,
+    });
 
-    return question;
+    if (!mockExamQuestion) throw MOCK_EXAM_QUESTIONS_ERRORS.NOT_FOUND;
+
+    return mockExamQuestion;
   }
 
-  public async findOne(_id: string): Promise<MockExamQuestionResponseDto> {
-    const question = await this.findQuestionByID(_id);
+  public async findOne(
+    _id: string,
+    mock_exam_id: string,
+  ): Promise<MockExamQuestionResponseDto> {
+    const question = await this.findQuestionByID(_id, mock_exam_id);
 
     return new MockExamQuestionResponseDto(question);
   }
 
   public async update(
     _id: string,
+    mock_exam_id: string,
     dto: UpdateMockExamQuestionDto,
   ): Promise<MockExamQuestionResponseDto> {
-    await this.findQuestionByID(_id);
+    await this.checkIfCanChange(mock_exam_id);
+
+    await this.findQuestionByID(_id, mock_exam_id);
 
     if (dto?.options) {
       // dto.options = this.validateOptionsUpdate(entity.options, dto.options);
@@ -106,6 +129,12 @@ export class MockExamQuestionsService {
 
     await this.mockExamQuestionsModel.updateOne({ _id }, dto);
 
-    return this.findOne(_id);
+    return this.findOne(_id, mock_exam_id);
+  }
+
+  public async remove(_id: string, mock_exam_id: string): Promise<void> {
+    await this.checkIfCanChange(mock_exam_id);
+
+    await this.mockExamQuestionsModel.deleteOne({ _id, mock_exam_id });
   }
 }
