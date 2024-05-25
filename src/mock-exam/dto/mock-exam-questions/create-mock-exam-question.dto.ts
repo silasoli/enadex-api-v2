@@ -3,7 +3,6 @@ import { Type } from 'class-transformer';
 import {
   ArrayMaxSize,
   ArrayMinSize,
-  IsMongoId,
   IsNotEmpty,
   ValidateNested,
 } from 'class-validator';
