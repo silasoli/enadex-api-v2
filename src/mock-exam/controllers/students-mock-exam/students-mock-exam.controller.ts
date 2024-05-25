@@ -16,7 +16,7 @@ import { StudentMockExamResponseDto } from '../../dto/students-mock-exam/mock-ex
 
 @ApiBearerAuth()
 @ApiTags('Me Mock Exams')
-@Controller('/exams/me')
+@Controller('me/exams')
 @UseGuards(AuthUserJwtGuard)
 export class StudentsMockExamController {
   constructor(private readonly service: StudentsMockExamService) {}
