@@ -6,12 +6,11 @@ import {
   Patch,
   Param,
   HttpCode,
-  Delete,
   UseGuards,
 } from '@nestjs/common';
-import { MockExamService } from '../services/mock-exam.service';
-import { CreateMockExamDto } from '../dto/mock-exam/create-mock-exam.dto';
-import { UpdateMockExamDto } from '../dto/mock-exam/update-mock-exam.dto';
+import { MockExamService } from '../../services/mock-exam/mock-exam.service';
+import { CreateMockExamDto } from '../../dto/mock-exam/create-mock-exam.dto';
+import { UpdateMockExamDto } from '../../dto/mock-exam/update-mock-exam.dto';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -19,12 +18,12 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { AuthUserJwtGuard } from '../../auth/guards/auth-user-jwt.guard';
-import { RoleGuard } from '../../roles/guards/role.guard';
-import { IDQueryDTO } from '../../common/dto/id-query.dto';
-import { Role } from '../../roles/decorators/roles.decorator';
-import { ManagersRoleEnum } from '../../managers/schemas/manager.entity';
-import { MockExamResponseDto } from '../dto/mock-exam/mock-exam-response.dto';
+import { AuthUserJwtGuard } from '../../../auth/guards/auth-user-jwt.guard';
+import { RoleGuard } from '../../../roles/guards/role.guard';
+import { IDQueryDTO } from '../../../common/dto/id-query.dto';
+import { Role } from '../../../roles/decorators/roles.decorator';
+import { ManagersRoleEnum } from '../../../managers/schemas/manager.entity';
+import { MockExamResponseDto } from '../../dto/mock-exam/mock-exam-response.dto';
 
 @ApiBearerAuth()
 @ApiTags('Mock Exams')
@@ -88,15 +87,37 @@ export class MockExamController {
     return this.mockExamService.update(params.id, dto);
   }
 
-  @ApiOperation({ summary: 'Excluir simulado' })
+  @ApiOperation({ summary: 'Disponibilizar simulado' })
   @ApiResponse({
     status: 204,
-    description: 'Simulado excluido com sucesso',
   })
   @HttpCode(204)
-  @Delete(':id')
+  @Patch(':id/available')
   @Role([ManagersRoleEnum.COORDINATORS, ManagersRoleEnum.TEACHERS])
-  public remove(@Param() params: IDQueryDTO): Promise<void> {
-    return this.mockExamService.remove(params.id);
+  public makeAvailable(@Param() params: IDQueryDTO): Promise<void> {
+    return this.mockExamService.makeAvailable(params.id);
   }
+
+  @ApiOperation({ summary: 'Finalizar simulado' })
+  @ApiResponse({
+    status: 204,
+  })
+  @HttpCode(204)
+  @Patch(':id/finish')
+  @Role([ManagersRoleEnum.COORDINATORS, ManagersRoleEnum.TEACHERS])
+  public finishMockExam(@Param() params: IDQueryDTO): Promise<void> {
+    return this.mockExamService.finishMockExam(params.id);
+  }
+
+  // @ApiOperation({ summary: 'Excluir simulado' })
+  // @ApiResponse({
+  //   status: 204,
+  //   description: 'Simulado excluido com sucesso',
+  // })
+  // @HttpCode(204)
+  // @Delete(':id')
+  // @Role([ManagersRoleEnum.COORDINATORS, ManagersRoleEnum.TEACHERS])
+  // public remove(@Param() params: IDQueryDTO): Promise<void> {
+  //   return this.mockExamService.remove(params.id);
+  // }
 }
