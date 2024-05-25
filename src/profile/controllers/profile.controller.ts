@@ -24,7 +24,7 @@ import { ManagerResponseDto } from '../../managers/dto/manager-response.dto';
 
 @ApiBearerAuth()
 @ApiTags('Profile')
-@Controller('profile')
+@Controller('me/')
 @UseGuards(AuthUserJwtGuard)
 export class ProfileController {
   constructor(private readonly profileService: ProfileService) {}
@@ -42,7 +42,7 @@ export class ProfileController {
       },
     },
   })
-  @Get('me')
+  @Get('profile')
   public findOneProfile(
     @UserRequest() user: UserRequestDTO,
   ): Promise<ManagerResponseDto | StudentResponseDto> {
@@ -64,7 +64,7 @@ export class ProfileController {
     },
   })
   @ApiBody({ type: UpdateProfileDto })
-  @Patch('me')
+  @Patch('profile')
   public updateOneProfile(
     @UserRequest() user: UserRequestDTO,
     @Body() updateProfileDto: UpdateProfileDto,
