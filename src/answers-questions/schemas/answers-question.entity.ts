@@ -20,9 +20,6 @@ export class AnswerQuestions {
 
   @Prop({ required: true })
   selected_option_id: string;
-
-  @Prop({ required: true })
-  right_answer: boolean;
 }
 
 export const AnswerQuestionsSchema =

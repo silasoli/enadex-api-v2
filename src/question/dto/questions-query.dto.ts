@@ -29,7 +29,7 @@ export class QuestionQueryDto {
   })
   searchText?: string;
 
-  @ApiProperty({ example: '2024' })
+  @ApiProperty({ example: '2024', required: false })
   @IsOptional()
   @MinLength(4, { message: 'O ano da questão deve conter 4 digitos.' })
   @MaxLength(4, { message: 'O ano da questão deve conter 4 digitos.' })
