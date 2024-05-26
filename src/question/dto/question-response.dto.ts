@@ -44,6 +44,9 @@ export class QuestionResponseDto {
   options: OptionPartResponseDto[];
 
   @ApiProperty({ required: true })
+  year: string;
+
+  @ApiProperty({ required: true })
   isSpecific: boolean;
 
   @ApiProperty({ required: true, type: CourseResponseDto })

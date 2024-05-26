@@ -2,8 +2,10 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   IsBooleanString,
   IsMongoId,
+  IsNumberString,
   IsOptional,
   IsString,
+  MaxLength,
   MinLength,
 } from 'class-validator';
 
@@ -26,6 +28,13 @@ export class QuestionQueryDto {
     message: 'O texto de busca deve ter pelo menos 1 caractere.',
   })
   searchText?: string;
+
+  @ApiProperty({ example: '2024' })
+  @IsOptional()
+  @MinLength(4, { message: 'O ano da questão deve conter 4 digitos.' })
+  @MaxLength(4, { message: 'O ano da questão deve conter 4 digitos.' })
+  @IsNumberString({}, { message: 'Deve conter apenas números' })
+  year: string;
 
   @ApiProperty({
     required: false,

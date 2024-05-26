@@ -7,6 +7,7 @@ import {
   AnswerQuestions,
   AnswerQuestionsSchema,
 } from '../answers-questions/schemas/answers-question.entity';
+import { CoursesModule } from '../courses/courses.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import {
       { name: Question.name, schema: QuestionSchema },
       { name: AnswerQuestions.name, schema: AnswerQuestionsSchema },
     ]),
+    CoursesModule,
   ],
   controllers: [QuestionController],
   providers: [QuestionService],

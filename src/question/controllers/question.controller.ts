@@ -28,6 +28,7 @@ import { QuestionResponseDto } from '../dto/question-response.dto';
 import { ManagersRoleEnum } from '../../managers/schemas/manager.entity';
 import { Role } from '../../roles/decorators/roles.decorator';
 import { QuestionQueryDto } from '../dto/questions-query.dto';
+import { FilterResponseDto } from '../dto/filter-response.dto';
 
 @ApiBearerAuth()
 @ApiTags('Questions')
@@ -46,6 +47,15 @@ export class QuestionController {
   @Post()
   create(@Body() dto: CreateQuestionDto) {
     return this.questionService.create(dto);
+  }
+
+  @ApiOperation({ summary: 'List filters' })
+  @ApiOkResponse({
+    type: [FilterResponseDto],
+  })
+  @Get('filters')
+  async getFilters(): Promise<FilterResponseDto[]> {
+    return this.questionService.getFilters();
   }
 
   @ApiOperation({ summary: 'List questions' })
