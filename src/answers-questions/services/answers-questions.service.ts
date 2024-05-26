@@ -60,7 +60,7 @@ export class AnswersQuestionsService {
       student_id,
     });
 
-    return new AnswersQuestionsResponseDto(created);
+    return this.findById(String(created._id), student_id)
   }
 
   public async findAll(
