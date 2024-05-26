@@ -6,6 +6,9 @@ import {
   IsBoolean,
   IsMongoId,
   IsNotEmpty,
+  IsNumberString,
+  MaxLength,
+  MinLength,
   ValidateIf,
   ValidateNested,
 } from 'class-validator';
@@ -43,6 +46,12 @@ export class CreateQuestionDto {
   @ValidateNested()
   @Type(() => OptionPartDto)
   options: OptionPartDto[];
+
+  @ApiProperty({ example: '2024' })
+  @MinLength(4, { message: 'O ano da questão deve conter 4 digitos.' })
+  @MaxLength(4, { message: 'O ano da questão deve conter 4 digitos.' })
+  @IsNumberString({}, { message: 'Deve conter apenas números' })
+  year: string;
 
   @ApiProperty({ required: true })
   @IsNotEmpty()

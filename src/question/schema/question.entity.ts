@@ -37,6 +37,9 @@ export class Question {
   @Prop({ required: true, minlength: 5, type: [OptionPart] })
   options: OptionPart[];
 
+  @Prop({ minlength: 4, maxlength: 4 })
+  year: string | null;
+
   @Prop({ required: true, default: true })
   isSpecific: boolean;
 

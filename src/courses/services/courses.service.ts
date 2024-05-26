@@ -46,4 +46,14 @@ export class CoursesService {
 
     return new CourseResponseDto(course);
   }
+
+  public async findCoursesByIds(
+    courseIds: Course[],
+  ): Promise<{ _id: string; name: string }[]> {
+    return this.courseModel
+      .find({
+        _id: { $in: courseIds },
+      })
+      .select('_id name');
+  }
 }

@@ -14,6 +14,8 @@ import {
   AnswerQuestions,
   AnswerQuestionsDocument,
 } from '../../answers-questions/schemas/answers-question.entity';
+import { CoursesService } from '../../courses/services/courses.service';
+import { FilterResponseDto } from '../dto/filter-response.dto';
 
 @Injectable()
 export class QuestionService {
@@ -23,6 +25,8 @@ export class QuestionService {
 
     @InjectModel(AnswerQuestions.name)
     private answerModel: Model<AnswerQuestionsDocument>,
+
+    private readonly coursesService: CoursesService,
   ) {}
 
   private checkIfHaveCorrectOption(
@@ -45,16 +49,43 @@ export class QuestionService {
     return new QuestionResponseDto(created);
   }
 
+  public async getFilters(): Promise<FilterResponseDto[]> {
+    const distinctCourseIds = await this.questionModel.distinct('course_id', {
+      course_id: { $ne: null },
+    });
+
+    const distinctYears = await this.questionModel.distinct('year', {
+      year: { $ne: null },
+    });
+
+    return [
+      {
+        filter: 'course_id',
+        values: await this.coursesService.findCoursesByIds(distinctCourseIds),
+      },
+      {
+        filter: 'year',
+        values: distinctYears,
+      },
+      {
+        filter: 'isSpecific',
+        values: [true, false],
+      },
+      {
+        filter: 'searchText',
+        values: [],
+      },
+    ];
+  }
+
   public async findAll(
     searchParams: QuestionQueryDto,
   ): Promise<QuestionResponseDto[]> {
-    const { course_id, searchText, isSpecific } = searchParams;
+    const { course_id, searchText, isSpecific, year } = searchParams;
 
     const filter: FilterQuery<Question> = { active: true };
 
-    if (course_id) {
-      filter.course_id = course_id;
-    }
+    if (course_id) filter.course_id = course_id;
 
     if (searchText) {
       filter.statements = {
@@ -65,6 +96,8 @@ export class QuestionService {
     if (isSpecific !== undefined) {
       filter.isSpecific = isSpecific === 'true' ? true : false;
     }
+
+    if (year) filter.year = year;
 
     const data = await this.questionModel
       .find(filter)
