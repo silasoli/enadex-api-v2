@@ -90,7 +90,6 @@ export class MockExamQuestionsController {
   })
   @ApiBody({ type: CreateMockExamQuestionDto })
   @Role([ManagersRoleEnum.COORDINATORS, ManagersRoleEnum.TEACHERS])
-  @Get(':id/questions/:question_id')
   @Patch(':id/questions/:question_id')
   update(
     @Param() params: MockExamQuestionParamDto,
