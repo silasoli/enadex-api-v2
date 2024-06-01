@@ -35,6 +35,14 @@ export class MockExamService {
     return mockExams.map((item) => new MockExamResponseDto(item));
   }
 
+  public async findAllAvailable(): Promise<MockExamResponseDto[]> {
+    const mockExams = await this.mockExamModel
+      .find({ available: true, finished: null, finishedAt: null  })
+      .populate({ path: 'course_id' });
+
+    return mockExams.map((item) => new MockExamResponseDto(item));
+  }
+
   public async findMockExamByID(_id: string): Promise<MockExam> {
     const mock = await this.mockExamModel
       .findById(_id)
@@ -66,6 +74,8 @@ export class MockExamService {
 
   public async makeAvailable(_id: string): Promise<void> {
     const mockExam = await this.findMockExamByID(_id);
+
+    //verificar se existe questao
 
     if (mockExam.available) throw MOCK_EXAM_ERRORS.IS_AVAILABLE;
 

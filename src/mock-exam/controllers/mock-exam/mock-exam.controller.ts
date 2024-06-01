@@ -59,6 +59,18 @@ export class MockExamController {
     return this.mockExamService.findAll();
   }
 
+  @ApiOperation({ summary: 'Obter listagem de disponiveis' })
+  @ApiResponse({
+    status: 200,
+    description: 'Listagem de simulados retornada com sucesso',
+    type: [MockExamResponseDto],
+  })
+  @Get('available')
+  @Role([ManagersRoleEnum.COORDINATORS, ManagersRoleEnum.TEACHERS])
+  public findAllAvailable(): Promise<MockExamResponseDto[]> {
+    return this.mockExamService.findAllAvailable();
+  }
+
   @ApiOperation({ summary: 'Obter simulado' })
   @ApiResponse({
     status: 200,
