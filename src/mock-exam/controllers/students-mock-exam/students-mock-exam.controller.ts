@@ -13,9 +13,10 @@ import { CreateStudentMockExamDto } from '../../dto/students-mock-exam/create-st
 import { UserRequest } from '../../../auth/decorators/user-request.decorator';
 import { UserRequestDTO } from '../../../common/dto/user-request.dto';
 import { StudentMockExamResponseDto } from '../../dto/students-mock-exam/mock-exam-response.dto';
+import { MockExamQuestionResponseDto } from '../../dto/mock-exam-questions/mock-exam-question-response.dto';
 
 @ApiBearerAuth()
-@ApiTags('Me Mock Exams')
+@ApiTags('Me Exams')
 @Controller('me/exams')
 @UseGuards(AuthUserJwtGuard)
 export class StudentsMockExamController {
@@ -61,6 +62,21 @@ export class StudentsMockExamController {
     @Param() params: IDQueryDTO,
   ): Promise<StudentMockExamResponseDto> {
     return this.service.findById(params.id, user._id);
+  }
+
+
+  @ApiOperation({ summary: 'Obter questões do simulado' })
+  @ApiResponse({
+    status: 200,
+    description: 'Questões do simulado retornado com sucesso',
+    type: [MockExamQuestionResponseDto],
+  })
+  @Get(':id/questions')
+  public findQuestions(
+    @UserRequest() user: UserRequestDTO,
+    @Param() params: IDQueryDTO,
+  ): Promise<MockExamQuestionResponseDto[]> {
+    return this.service.findQuestions(params.id, user._id);
   }
 
   // @ApiOperation({ summary: 'Editar simulado do estudante logado' })
