@@ -13,11 +13,12 @@ import { UserRequest } from '../../auth/decorators/user-request.decorator';
 import { UserRequestDTO } from '../../common/dto/user-request.dto';
 import { AnswersQuestionsResponseDto } from '../dto/answers-questions-response.dto';
 import { IDQueryDTO } from '../../common/dto/id-query.dto';
+import { StudentGuard } from '../../roles/guards/student.guard';
 
 @ApiBearerAuth()
 @ApiTags('Me Answers Questions')
 @Controller('me/answers-questions')
-@UseGuards(AuthUserJwtGuard)
+@UseGuards(AuthUserJwtGuard, StudentGuard)
 export class AnswersQuestionsController {
   constructor(
     private readonly answersQuestionsService: AnswersQuestionsService,

@@ -14,11 +14,13 @@ import { UserRequest } from '../../../auth/decorators/user-request.decorator';
 import { UserRequestDTO } from '../../../common/dto/user-request.dto';
 import { StudentMockExamResponseDto } from '../../dto/students-mock-exam/mock-exam-response.dto';
 import { MockExamQuestionResponseDto } from '../../dto/mock-exam-questions/mock-exam-question-response.dto';
+import { StudentGuard } from '../../../roles/guards/student.guard';
+import { MockExamResponseDto } from '../../dto/mock-exam/mock-exam-response.dto';
 
 @ApiBearerAuth()
 @ApiTags('Me Exams')
 @Controller('me/exams')
-@UseGuards(AuthUserJwtGuard)
+@UseGuards(AuthUserJwtGuard, StudentGuard)
 export class StudentsMockExamController {
   constructor(private readonly service: StudentsMockExamService) {}
 
@@ -48,6 +50,17 @@ export class StudentsMockExamController {
     @UserRequest() user: UserRequestDTO,
   ): Promise<StudentMockExamResponseDto[]> {
     return this.service.findAll(user._id);
+  }
+
+  @ApiOperation({ summary: 'Obter listagem de disponiveis' })
+  @ApiResponse({
+    status: 200,
+    description: 'Listagem de simulados retornada com sucesso',
+    type: [MockExamResponseDto],
+  })
+  @Get('available')
+  public findAllAvailable(): Promise<MockExamResponseDto[]> {
+    return this.service.findAllMockExamAvailable();
   }
 
   @ApiOperation({
