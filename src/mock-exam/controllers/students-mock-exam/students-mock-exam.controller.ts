@@ -50,6 +50,21 @@ export class StudentsMockExamController {
     return this.service.findAll(user._id);
   }
 
+  @ApiOperation({
+    summary: 'Obter listagem de simulados em andamento do estudante logado',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Listagem de simulados em andamento do estudante retornada com sucesso',
+    type: [StudentMockExamResponseDto],
+  })
+  @Get('progress')
+  public findAllOpened(
+    @UserRequest() user: UserRequestDTO,
+  ): Promise<StudentMockExamResponseDto[]> {
+    return this.service.findAllOpened(user._id);
+  }
+
   @ApiOperation({ summary: 'Obter simulado do estudante' })
   @ApiResponse({
     status: 200,
