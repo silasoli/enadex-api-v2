@@ -55,7 +55,8 @@ export class StudentsMockExamController {
   })
   @ApiResponse({
     status: 200,
-    description: 'Listagem de simulados em andamento do estudante retornada com sucesso',
+    description:
+      'Listagem de simulados em andamento do estudante retornada com sucesso',
     type: [StudentMockExamResponseDto],
   })
   @Get('progress')
