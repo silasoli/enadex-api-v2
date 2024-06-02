@@ -15,7 +15,7 @@ import { UserRequestDTO } from '../../../common/dto/user-request.dto';
 import { StudentMockExamResponseDto } from '../../dto/students-mock-exam/mock-exam-response.dto';
 
 @ApiBearerAuth()
-@ApiTags('Me Mock Exams')
+@ApiTags('Me Exams')
 @Controller('me/exams')
 @UseGuards(AuthUserJwtGuard)
 export class StudentsMockExamController {

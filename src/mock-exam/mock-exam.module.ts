@@ -15,6 +15,12 @@ import {
   MockExamQuestion,
   MockExamQuestionSchema,
 } from './schemas/mock-exam-question.entity';
+import { StudentsMockExamAnswerService } from './services/students-mock-exam-answer/students-mock-exam-answer.service';
+import {
+  StudentMockExamAnswer,
+  StudentMockExamAnswerSchema,
+} from './schemas/students-mock-exam-answer.entity';
+import { StudentsMockExamAnswerController } from './controllers/students-mock-exam-answer/students-mock-exam-answer.controller';
 
 @Module({
   imports: [
@@ -22,17 +28,20 @@ import {
       { name: MockExam.name, schema: MockExamSchema },
       { name: MockExamQuestion.name, schema: MockExamQuestionSchema },
       { name: StudentsMockExam.name, schema: StudentsMockExamSchema },
+      { name: StudentMockExamAnswer.name, schema: StudentMockExamAnswerSchema },
     ]),
   ],
   controllers: [
     MockExamController,
     StudentsMockExamController,
     MockExamQuestionsController,
+    StudentsMockExamAnswerController,
   ],
   providers: [
     MockExamService,
     StudentsMockExamService,
     MockExamQuestionsService,
+    StudentsMockExamAnswerService,
   ],
 })
 export class MockExamModule {}
