@@ -24,7 +24,7 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('Enadex API')
     .setDescription('Enadex API developed by ENADEX')
-    .setVersion('1.25.16')
+    .setVersion('1.28.20')
     .addBearerAuth()
     .build();
 
