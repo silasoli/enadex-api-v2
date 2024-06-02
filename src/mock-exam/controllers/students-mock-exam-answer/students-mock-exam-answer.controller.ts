@@ -12,6 +12,7 @@ import { UserRequest } from '../../../auth/decorators/user-request.decorator';
 import { UserRequestDTO } from '../../../common/dto/user-request.dto';
 import { IDQueryDTO } from '../../../common/dto/id-query.dto';
 import { CreateStudentMockExamAnswerDto } from '../../dto/students-mock-exam-answer/create-student-mock-exam-answer.dto';
+import { StudentMockExamAnswerResponseDto } from '../../dto/students-mock-exam-answer/students-mock-exam-answer-response.dto';
 
 @ApiBearerAuth()
 @ApiTags('Me Exams Answers')
@@ -26,7 +27,7 @@ export class StudentsMockExamAnswerController {
   @ApiResponse({
     status: 201,
     description: 'Resposta criada com sucesso',
-    // type: AnswersQuestionsResponseDto,
+    type: StudentMockExamAnswerResponseDto,
   })
   @Put(':id/answers')
   @ApiBody({ type: CreateStudentMockExamAnswerDto })
@@ -34,7 +35,7 @@ export class StudentsMockExamAnswerController {
     @UserRequest() user: UserRequestDTO,
     @Param() params: IDQueryDTO,
     @Body() dto: CreateStudentMockExamAnswerDto,
-  ): Promise<any> {
+  ): Promise<StudentMockExamAnswerResponseDto> {
     return this.studentsMockExamAnswerService.createOrUpdate(
       dto,
       params.id,
@@ -46,13 +47,13 @@ export class StudentsMockExamAnswerController {
   @ApiResponse({
     status: 200,
     description: 'Listagem de respostas do estudante retornada com sucesso',
-    // type: [],
+    type: [StudentMockExamAnswerResponseDto],
   })
   @Get(':id/answers')
   findAll(
     @UserRequest() user: UserRequestDTO,
     @Param() params: IDQueryDTO,
-  ): Promise<any[]> {
+  ): Promise<StudentMockExamAnswerResponseDto[]> {
     return this.studentsMockExamAnswerService.findAll(params.id, user._id);
   }
 }

@@ -18,6 +18,16 @@ export class StudentsMockExamService {
     private readonly mockExamService: MockExamService,
   ) {}
 
+  private async validOpenMockExam(student_id: string): Promise<void> {
+    const mockExam = this.model.findOne({
+      student_id,
+      finished: false,
+      finishedAt: null,
+    });
+
+    if (mockExam) throw STUDENTS_MOCK_EXAM_ERRORS.OPENED_EXAM;
+  }
+
   private async findByMockExam(
     student_id: string,
     mock_exam_id: string,
@@ -62,6 +72,7 @@ export class StudentsMockExamService {
   ): Promise<StudentMockExamResponseDto> {
     await this.validClosedMockExam(dto.mock_exam_id);
     await this.validExistMockExam(student_id, dto.mock_exam_id);
+    await this.validOpenMockExam(student_id);
     await this.validExistMockExamInYear(student_id, dto.mock_exam_id);
 
     const created = await this.model.create({ ...dto, student_id });

@@ -11,6 +11,8 @@ import { MockExamQuestionsService } from '../mock-exam-questions/mock-exam-quest
 import { MockExamService } from '../mock-exam/mock-exam.service';
 import { MockExam } from '../../schemas/mock-exam.entity';
 import { StudentMockExamResponseDto } from '../../dto/students-mock-exam/mock-exam-response.dto';
+import { StudentMockExamAnswerResponseDto } from '../../dto/students-mock-exam-answer/students-mock-exam-answer-response.dto';
+import { STUDENTS_MOCK_EXAM_ANSWER_ERRORS } from '../../constants/students-exam-answer-errors';
 
 @Injectable()
 export class StudentsMockExamAnswerService {
@@ -51,6 +53,20 @@ export class StudentsMockExamAnswerService {
       throw new UnprocessableEntityException('finalizar simulado');
   }
 
+  public async checkOptionBelongsQuestion(
+    question_id: string,
+    selected_option_id: string,
+  ): Promise<void> {
+    const belongsQuestion =
+      await this.mockExamQuestionsService.checkOptionBelongsQuestion(
+        question_id,
+        selected_option_id,
+      );
+
+    if (!belongsQuestion)
+      throw STUDENTS_MOCK_EXAM_ANSWER_ERRORS.OPTION_NOT_FOUND;
+  }
+
   private async findByDTO(
     dto: CreateStudentMockExamAnswerDto,
     mock_exam_id: string,
@@ -64,8 +80,7 @@ export class StudentsMockExamAnswerService {
       mock_exam_id,
     );
 
-    //verificar se opção selecionada existe pra questão
-    //validar se usuario ta tentando alterar no exam.finishi
+    await this.checkOptionBelongsQuestion(question_id, selected_option_id);
 
     return this.model.findOne({
       student_id,
@@ -79,8 +94,10 @@ export class StudentsMockExamAnswerService {
     dto: CreateStudentMockExamAnswerDto,
     exam_id: string,
     student_id: string,
-  ): Promise<StudentMockExamAnswer> {
+  ): Promise<StudentMockExamAnswerResponseDto> {
     const exam = await this.examService.findById(exam_id, student_id);
+    if (exam.finished) throw STUDENTS_MOCK_EXAM_ANSWER_ERRORS.FINISHED_EXAM;
+
     const mock_exam_id = String(exam.mock_exam_id);
 
     await this.validAnswer(mock_exam_id, exam);
@@ -97,7 +114,7 @@ export class StudentsMockExamAnswerService {
     mock_exam_id: string,
     exam_id: string,
     student_id: string,
-  ): Promise<StudentMockExamAnswer> {
+  ): Promise<StudentMockExamAnswerResponseDto> {
     const created = await this.model.create({
       ...dto,
       mock_exam_id,
@@ -105,26 +122,28 @@ export class StudentsMockExamAnswerService {
       student_id,
     });
 
-    return created;
+    return this.findOne(String(created._id));
   }
 
-  public async update(_id: string, selected_option_id: string): Promise<any> {
+  public async update(
+    _id: string,
+    selected_option_id: string,
+  ): Promise<StudentMockExamAnswerResponseDto> {
     await this.model.updateOne({ _id }, { selected_option_id });
+
+    return this.findOne(_id);
   }
 
-  // public async findById(_id: string,  student_id: string): Promise<any> {
-  //   //filtrar por exam/mockexam
-  //   const answer = await this.model
-  //     .findOne({ _id, student_id, exam_id  })
-  //     .populate({ path: 'question_id' });
+  public async findOne(_id: string): Promise<StudentMockExamAnswerResponseDto> {
+    const answer = await this.model.findById(_id);
 
-  //   if (!answer) STUDENTS_MOCK_EXAM_ANSWER_ERRORS.NOT_FOUND;
+    return new StudentMockExamAnswerResponseDto(answer);
+  }
 
-  //   return answer;
-  //   // return new AnswersQuestionsResponseDto(answer);
-  // }
-
-  public async findAll(exam_id: string, student_id: string): Promise<any[]> {
+  public async findAll(
+    exam_id: string,
+    student_id: string,
+  ): Promise<StudentMockExamAnswerResponseDto[]> {
     const exam = await this.examService.findById(exam_id, student_id);
 
     const mock_exam_id = String(exam.mock_exam_id);
@@ -133,7 +152,6 @@ export class StudentsMockExamAnswerService {
       .find({ student_id, exam_id, mock_exam_id })
       .populate({ path: 'question_id' });
 
-    return data;
-    // return data.map((item) => new AnswersQuestionsResponseDto(item));
+    return data.map((item) => new StudentMockExamAnswerResponseDto(item));
   }
 }

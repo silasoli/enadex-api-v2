@@ -27,6 +27,17 @@ export class MockExamQuestionsService {
     private readonly mockExamService: MockExamService,
   ) {}
 
+  public async checkOptionBelongsQuestion(
+    _id: string,
+    selected_option_id: string,
+  ): Promise<boolean> {
+    const question = await this.mockExamQuestionsModel.findById(_id);
+
+    return question.options.some(
+      (option) => option._id.toString() === selected_option_id,
+    );
+  }
+
   private async verifyMockExamExits(mock_exam_id: string): Promise<MockExam> {
     return this.mockExamService.findMockExamByID(mock_exam_id);
   }
