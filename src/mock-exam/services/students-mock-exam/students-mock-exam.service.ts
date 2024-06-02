@@ -31,6 +31,18 @@ export class StudentsMockExamService {
     if (mockExam) throw STUDENTS_MOCK_EXAM_ERRORS.OPENED_EXAM;
   }
 
+  public async findAllOpened(
+    student_id: string,
+  ): Promise<StudentMockExamResponseDto[]> {
+    const studentMockExams = await this.model.find({
+      student_id,
+      finished: false,
+      finishedAt: null,
+    });
+
+    return studentMockExams.map((item) => new StudentMockExamResponseDto(item));
+  }
+
   private async findByMockExam(
     student_id: string,
     mock_exam_id: string,
