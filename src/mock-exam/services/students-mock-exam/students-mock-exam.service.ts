@@ -11,6 +11,7 @@ import { StudentMockExamResponseDto } from '../../dto/students-mock-exam/mock-ex
 import { STUDENTS_MOCK_EXAM_ERRORS } from '../../constants/students-exam-errors';
 import { MockExamQuestionsService } from '../mock-exam-questions/mock-exam-questions.service';
 import { MockExamQuestionResponseDto } from '../../dto/mock-exam-questions/mock-exam-question-response.dto';
+import { MockExamResponseDto } from '../../dto/mock-exam/mock-exam-response.dto';
 
 @Injectable()
 export class StudentsMockExamService {
@@ -113,6 +114,10 @@ export class StudentsMockExamService {
       studentMockExam.mock_exam_id,
       {},
     );
+  }
+
+  public async findAllMockExamAvailable(): Promise<MockExamResponseDto[]> {
+    return this.mockExamService.findAllAvailable();
   }
 
   public async findById(

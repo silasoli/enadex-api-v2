@@ -13,11 +13,12 @@ import { UserRequestDTO } from '../../../common/dto/user-request.dto';
 import { IDQueryDTO } from '../../../common/dto/id-query.dto';
 import { CreateStudentMockExamAnswerDto } from '../../dto/students-mock-exam-answer/create-student-mock-exam-answer.dto';
 import { StudentMockExamAnswerResponseDto } from '../../dto/students-mock-exam-answer/students-mock-exam-answer-response.dto';
+import { StudentGuard } from '../../../roles/guards/student.guard';
 
 @ApiBearerAuth()
 @ApiTags('Me Exams Answers')
 @Controller('me/exams')
-@UseGuards(AuthUserJwtGuard)
+@UseGuards(AuthUserJwtGuard, StudentGuard)
 export class StudentsMockExamAnswerController {
   constructor(
     private readonly studentsMockExamAnswerService: StudentsMockExamAnswerService,

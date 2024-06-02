@@ -134,7 +134,6 @@ export class MockExamQuestionsService {
     await this.findQuestionByID(_id, mock_exam_id);
 
     if (dto?.options) {
-      // dto.options = this.validateOptionsUpdate(entity.options, dto.options);
       this.checkIfHaveCorrectOption(dto.options);
     }
 
