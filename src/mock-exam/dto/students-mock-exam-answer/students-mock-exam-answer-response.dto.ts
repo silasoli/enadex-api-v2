@@ -27,7 +27,7 @@ export class StudentMockExamAnswerResponseDto {
 
   @ApiProperty({ required: true })
   mock_exam_id: string;
- 
+
   @ApiProperty({ required: true })
   student_id: string;
 

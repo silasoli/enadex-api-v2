@@ -64,7 +64,6 @@ export class StudentsMockExamController {
     return this.service.findById(params.id, user._id);
   }
 
-
   @ApiOperation({ summary: 'Obter questões do simulado' })
   @ApiResponse({
     status: 200,

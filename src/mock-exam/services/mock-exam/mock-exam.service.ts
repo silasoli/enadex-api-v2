@@ -37,7 +37,7 @@ export class MockExamService {
 
   public async findAllAvailable(): Promise<MockExamResponseDto[]> {
     const mockExams = await this.mockExamModel
-      .find({ available: true, finished: false, finishedAt: null  })
+      .find({ available: true, finished: false, finishedAt: null })
       .populate({ path: 'course_id' });
 
     return mockExams.map((item) => new MockExamResponseDto(item));
