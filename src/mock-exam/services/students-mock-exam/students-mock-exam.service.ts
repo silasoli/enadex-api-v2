@@ -9,6 +9,8 @@ import { CreateStudentMockExamDto } from '../../dto/students-mock-exam/create-st
 import { MockExamService } from '../mock-exam/mock-exam.service';
 import { StudentMockExamResponseDto } from '../../dto/students-mock-exam/mock-exam-response.dto';
 import { STUDENTS_MOCK_EXAM_ERRORS } from '../../constants/students-exam-errors';
+import { MockExamQuestionsService } from '../mock-exam-questions/mock-exam-questions.service';
+import { MockExamQuestionResponseDto } from '../../dto/mock-exam-questions/mock-exam-question-response.dto';
 
 @Injectable()
 export class StudentsMockExamService {
@@ -16,10 +18,11 @@ export class StudentsMockExamService {
     @InjectModel(StudentsMockExam.name)
     private model: Model<StudentsMockExamDocument>,
     private readonly mockExamService: MockExamService,
+    private readonly mockExamQuestionsService: MockExamQuestionsService,
   ) {}
 
   private async validOpenMockExam(student_id: string): Promise<void> {
-    const mockExam = this.model.findOne({
+    const mockExam = await this.model.findOne({
       student_id,
       finished: false,
       finishedAt: null,
@@ -86,6 +89,18 @@ export class StudentsMockExamService {
     const studentMockExams = await this.model.find({ student_id });
 
     return studentMockExams.map((item) => new StudentMockExamResponseDto(item));
+  }
+
+  public async findQuestions(
+    _id: string,
+    student_id: string,
+  ): Promise<MockExamQuestionResponseDto[]> {
+    const studentMockExam = await this.findById(_id, student_id);
+
+    return this.mockExamQuestionsService.findAll(
+      studentMockExam.mock_exam_id,
+      {},
+    );
   }
 
   public async findById(

@@ -25,7 +25,7 @@ export class StudentsMockExamAnswerController {
 
   @ApiOperation({ summary: 'Cadastrar resposta de questão para estudante' })
   @ApiResponse({
-    status: 201,
+    status: 200,
     description: 'Resposta criada com sucesso',
     type: StudentMockExamAnswerResponseDto,
   })

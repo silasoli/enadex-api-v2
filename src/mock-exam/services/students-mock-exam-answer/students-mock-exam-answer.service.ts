@@ -148,9 +148,8 @@ export class StudentsMockExamAnswerService {
 
     const mock_exam_id = String(exam.mock_exam_id);
 
-    const data = await this.model
-      .find({ student_id, exam_id, mock_exam_id })
-      .populate({ path: 'question_id' });
+    const data = await this.model.find({ student_id, exam_id, mock_exam_id });
+    // .populate({ path: 'question_id' });
 
     return data.map((item) => new StudentMockExamAnswerResponseDto(item));
   }

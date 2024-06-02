@@ -66,7 +66,6 @@ export class MockExamController {
     type: [MockExamResponseDto],
   })
   @Get('available')
-  @Role([ManagersRoleEnum.COORDINATORS, ManagersRoleEnum.TEACHERS])
   public findAllAvailable(): Promise<MockExamResponseDto[]> {
     return this.mockExamService.findAllAvailable();
   }
