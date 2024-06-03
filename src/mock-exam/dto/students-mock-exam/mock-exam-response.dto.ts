@@ -15,7 +15,7 @@ export class StudentMockExamResponseDto {
 
     return {
       _id: String(_id),
-      mock_exam_id: String(mock_exam_id),
+      mock_exam_id,
       student_id: String(student_id),
       finished,
       finishedAt,
@@ -28,7 +28,7 @@ export class StudentMockExamResponseDto {
   _id: string;
 
   @ApiProperty({ required: true })
-  mock_exam_id: string;
+  mock_exam_id: any;
 
   @ApiProperty({ required: true })
   student_id: string;

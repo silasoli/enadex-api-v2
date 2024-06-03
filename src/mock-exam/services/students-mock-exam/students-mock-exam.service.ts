@@ -35,11 +35,13 @@ export class StudentsMockExamService {
   public async findAllOpened(
     student_id: string,
   ): Promise<StudentMockExamResponseDto[]> {
-    const studentMockExams = await this.model.find({
-      student_id,
-      finished: false,
-      finishedAt: null,
-    });
+    const studentMockExams = await this.model
+      .find({
+        student_id,
+        finished: false,
+        finishedAt: null,
+      })
+      .populate({ path: 'mock_exam_id' });
 
     return studentMockExams.map((item) => new StudentMockExamResponseDto(item));
   }
