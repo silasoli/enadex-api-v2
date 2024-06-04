@@ -46,6 +46,20 @@ export class StudentsMockExamService {
     return studentMockExams.map((item) => new StudentMockExamResponseDto(item));
   }
 
+  public async findAllFinished(
+    student_id: string,
+  ): Promise<StudentMockExamResponseDto[]> {
+    const studentMockExams = await this.model
+      .find({
+        student_id,
+        finished: true,
+        finishedAt: { $ne: null },
+      })
+      .populate({ path: 'mock_exam_id' });
+
+    return studentMockExams.map((item) => new StudentMockExamResponseDto(item));
+  }
+
   private async findByMockExam(
     student_id: string,
     mock_exam_id: string,
@@ -116,6 +130,7 @@ export class StudentsMockExamService {
       studentMockExam.mock_exam_id,
       {},
     );
+    //fazer tratamento para retornar correctioOption null se não tiver exam finalizado e mockexam finalizado
   }
 
   public async findAllMockExamAvailable(): Promise<MockExamResponseDto[]> {
@@ -145,30 +160,15 @@ export class StudentsMockExamService {
     return elapsedTime >= mockExam.duration;
   }
 
-  private async finishStudentMockExam(
+  public async finishStudentMockExam(
     _id: string,
     student_id: string,
-  ): Promise<void> {
+  ): Promise<StudentMockExamResponseDto> {
     await this.model.updateOne(
       { _id, student_id },
       { finished: true, finishedAt: new Date() },
     );
+
+    return this.findById(_id, student_id);
   }
-
-  //   public async update(
-  //     _id: string,
-  //     student_id: string,
-  //     dto: UpdateStudentMockExamDto,
-  //   ): Promise<StudentMockExamResponseDto> {
-  //     const studentMockExam = await this.findById(_id, student_id);
-
-  //     await this.validDuration(
-  //       studentMockExam.mock_exam_id,
-  //       studentMockExam.createdAt,
-  //     );
-
-  //     await this.model.updateOne({ _id }, dto);
-
-  //     return this.findById(_id, student_id);
-  //   }
 }
