@@ -79,6 +79,22 @@ export class StudentsMockExamController {
     return this.service.findAllOpened(user._id);
   }
 
+  @ApiOperation({
+    summary: 'Obter listagem de simulados finalizados do estudante logado',
+  })
+  @ApiResponse({
+    status: 200,
+    description:
+      'Listagem de simulados finalizados do estudante retornada com sucesso',
+    type: [StudentMockExamResponseDto],
+  })
+  @Get('finished')
+  public findAllFinished(
+    @UserRequest() user: UserRequestDTO,
+  ): Promise<StudentMockExamResponseDto[]> {
+    return this.service.findAllFinished(user._id);
+  }
+
   @ApiOperation({ summary: 'Obter simulado do estudante' })
   @ApiResponse({
     status: 200,
@@ -91,6 +107,21 @@ export class StudentsMockExamController {
     @Param() params: IDQueryDTO,
   ): Promise<StudentMockExamResponseDto> {
     return this.service.findById(params.id, user._id);
+  }
+
+
+  @ApiOperation({ summary: 'Finalizar simulado do estudante' })
+  @ApiResponse({
+    status: 201,
+    description: 'Simulado do estudante finalizado com sucesso',
+    type: StudentMockExamResponseDto,
+  })
+  @Post(':id/finish')
+  public finishStudentMockExam(
+    @UserRequest() user: UserRequestDTO,
+    @Param() params: IDQueryDTO,
+  ): Promise<StudentMockExamResponseDto> {
+    return this.service.finishStudentMockExam(params.id, user._id);
   }
 
   @ApiOperation({ summary: 'Obter questões do simulado' })
@@ -106,20 +137,4 @@ export class StudentsMockExamController {
   ): Promise<MockExamQuestionResponseDto[]> {
     return this.service.findQuestions(params.id, user._id);
   }
-
-  // @ApiOperation({ summary: 'Editar simulado do estudante logado' })
-  // @ApiResponse({
-  //   status: 200,
-  //   description: 'Editar da conta do usuário realizada com sucesso',
-  //   type: StudentMockExamResponseDto,
-  // })
-  // @ApiBody({ type: UpdateStudentMockExamDto })
-  // @Patch(':id')
-  // update(
-  //   @Param() params: IDQueryDTO,
-  //   @UserRequest() user: UserRequestDTO,
-  //   @Body() dto: UpdateStudentMockExamDto,
-  // ): Promise<StudentMockExamResponseDto> {
-  //   return this.service.update(params.id, user._id, dto);
-  // }
 }

@@ -57,4 +57,21 @@ export class StudentsMockExamAnswerController {
   ): Promise<StudentMockExamAnswerResponseDto[]> {
     return this.studentsMockExamAnswerService.findAll(params.id, user._id);
   }
+
+  @ApiOperation({ summary: 'Obter listagem de respostas do estudante' })
+  @ApiResponse({
+    status: 200,
+    description: 'Listagem de respostas do estudante retornada com sucesso',
+    type: [StudentMockExamAnswerResponseDto],
+  })
+  @Get(':id/answers/resume')
+  examAnswersResume(
+    @UserRequest() user: UserRequestDTO,
+    @Param() params: IDQueryDTO,
+  ): Promise<any> {
+    return this.studentsMockExamAnswerService.examAnswersResume(
+      params.id,
+      user._id,
+    );
+  }
 }

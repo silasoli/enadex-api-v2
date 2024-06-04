@@ -13,6 +13,7 @@ import { MockExam } from '../../schemas/mock-exam.entity';
 import { StudentMockExamResponseDto } from '../../dto/students-mock-exam/mock-exam-response.dto';
 import { StudentMockExamAnswerResponseDto } from '../../dto/students-mock-exam-answer/students-mock-exam-answer-response.dto';
 import { STUDENTS_MOCK_EXAM_ANSWER_ERRORS } from '../../constants/students-exam-answer-errors';
+import { MockExamQuestionResponseDto } from '../../dto/mock-exam-questions/mock-exam-question-response.dto';
 
 @Injectable()
 export class StudentsMockExamAnswerService {
@@ -152,5 +153,57 @@ export class StudentsMockExamAnswerService {
     // .populate({ path: 'question_id' });
 
     return data.map((item) => new StudentMockExamAnswerResponseDto(item));
+  }
+
+  private countExamPerformance(
+    questions: MockExamQuestionResponseDto[],
+    studentAnswers: StudentMockExamAnswer[],
+  ) {
+    let correct = 0;
+    let incorrect = 0;
+    let unanswered = 0;
+
+    for (const question of questions) {
+      const answer = studentAnswers.find(
+        (ans) => ans.question_id.toString() === question._id.toString(),
+      );
+
+      if (!answer) {
+        unanswered++;
+      } else {
+        const selectedOption = question.options.find(
+          (option) =>
+            option._id.toString() === answer.selected_option_id.toString(),
+        );
+
+        if (selectedOption && selectedOption.correctOption) {
+          correct++;
+        } else {
+          incorrect++;
+        }
+      }
+    }
+
+    return { correct, incorrect, unanswered };
+  }
+
+  public async examAnswersResume(exam_id: string, student_id: string) {
+    const exam = await this.examService.findById(exam_id, student_id);
+
+    const mock_exam_id = String(exam.mock_exam_id);
+
+    const mockExam = await this.mockExamService.findMockExamByID(mock_exam_id);
+
+    if (!exam.finished && !mockExam.finished)
+      throw STUDENTS_MOCK_EXAM_ANSWER_ERRORS.RESUME_NOT_AVAILABLE;
+
+    const questions = await this.mockExamQuestionsService.findAll(
+      mock_exam_id,
+      {},
+    );
+
+    const data = await this.model.find({ student_id, exam_id, mock_exam_id });
+
+    return this.countExamPerformance(questions, data);
   }
 }
