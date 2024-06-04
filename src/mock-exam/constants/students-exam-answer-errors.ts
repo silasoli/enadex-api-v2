@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
@@ -15,5 +16,9 @@ export const STUDENTS_MOCK_EXAM_ANSWER_ERRORS = {
   FINISHED_EXAM: new UnprocessableEntityException({
     id: 'STUDENTS-MOCK-EXAM-ANSWER-002',
     message: 'Simulado já finalizado.',
+  }),
+  RESUME_NOT_AVAILABLE: new BadRequestException({
+    id: 'STUDENTS-MOCK-EXAM-ANSWER-003',
+    message: 'Resumo não disponível.',
   }),
 };
