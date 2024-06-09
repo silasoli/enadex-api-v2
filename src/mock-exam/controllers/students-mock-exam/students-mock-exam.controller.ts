@@ -59,8 +59,10 @@ export class StudentsMockExamController {
     type: [MockExamResponseDto],
   })
   @Get('available')
-  public findAllAvailable(): Promise<MockExamResponseDto[]> {
-    return this.service.findAllMockExamAvailable();
+  public findAllAvailable(
+    @UserRequest() user: UserRequestDTO,
+  ): Promise<MockExamResponseDto[]> {
+    return this.service.findAllMockExamAvailable(user._id);
   }
 
   @ApiOperation({
