@@ -133,10 +133,24 @@ export class StudentsMockExamService {
     //fazer tratamento para retornar correctioOption null se não tiver exam finalizado e mockexam finalizado
   }
 
-  public async findAllMockExamAvailable(): Promise<MockExamResponseDto[]> {
-    return this.mockExamService.findAllAvailable();
-  }
+  public async findAllMockExamAvailable(
+    student_id: string,
+  ): Promise<MockExamResponseDto[]> {
+    const mockExams = await this.mockExamService.findAllAvailable();
+    const exams = await this.findAll(student_id);
 
+    const availableMockExams: MockExamResponseDto[] = [];
+
+    for (const mockExam of mockExams) {
+      const studentExam = exams.find(
+        (exam) => exam.mock_exam_id.toString() === mockExam._id.toString(),
+      );
+
+      if (!studentExam) availableMockExams.push(mockExam);
+    }
+
+    return availableMockExams;
+  }
   public async findById(
     _id: string,
     student_id: string,

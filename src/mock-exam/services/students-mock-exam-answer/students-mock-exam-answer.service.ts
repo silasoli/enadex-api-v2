@@ -81,7 +81,8 @@ export class StudentsMockExamAnswerService {
       mock_exam_id,
     );
 
-    await this.checkOptionBelongsQuestion(question_id, selected_option_id);
+    if (selected_option_id !== null)
+      await this.checkOptionBelongsQuestion(question_id, selected_option_id);
 
     return this.model.findOne({
       student_id,
