@@ -105,7 +105,8 @@ export class StudentsMockExamAnswerService {
 
     const answer = await this.findByDTO(dto, mock_exam_id, exam_id, student_id);
 
-    if (answer) return this.update(String(answer._id), dto.selected_option_id);
+    if (answer)
+      return this.update(String(answer._id), dto.selected_option_id || null);
 
     if (!answer) return this.create(dto, mock_exam_id, exam_id, student_id);
   }
@@ -168,7 +169,7 @@ export class StudentsMockExamAnswerService {
         (ans) => ans.question_id.toString() === question._id.toString(),
       );
 
-      if (!answer) {
+      if (!answer || answer.selected_option_id === null) {
         unanswered++;
       } else {
         const selectedOption = question.options.find(

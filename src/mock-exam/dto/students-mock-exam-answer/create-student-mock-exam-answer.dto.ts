@@ -9,8 +9,5 @@ export class CreateStudentMockExamAnswerDto {
   question_id: string;
 
   @ApiProperty({ required: true })
-  @IsNotEmpty()
-  @IsString()
-  @IsMongoId()
-  selected_option_id: string;
+  selected_option_id: string | null;
 }

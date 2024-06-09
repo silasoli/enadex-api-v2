@@ -34,8 +34,8 @@ export class StudentMockExamAnswer {
   @Prop({ required: true })
   student_id: string;
 
-  @Prop({ required: true })
-  selected_option_id: string;
+  @Prop({ required: false, default: null })
+  selected_option_id: string | null;
 }
 
 export const StudentMockExamAnswerSchema = SchemaFactory.createForClass(
